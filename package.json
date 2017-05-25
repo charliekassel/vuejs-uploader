@@ -2,9 +2,15 @@
   "name": "vuejs-uploader",
   "version": "0.0.4",
   "description": "Vue multipart uploader component",
+  "keywords": [
+    "vue",
+    "uploader",
+    "multipart-uploader"
+  ],
   "author": "Charlie Kassel <ck@charliekassel.com>",
   "private": false,
   "license": "MIT",
+  "main": "dist/build.js",
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
