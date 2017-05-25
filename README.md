@@ -37,7 +37,7 @@ in `server/php` that uses php's built in server.
 Other examples will follow.
 
 ```bash
-chmod 777 server/php
+chmod 777 server/uploads
 cd server/php
 php -S localhost:5000
 ```

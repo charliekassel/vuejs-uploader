@@ -14,9 +14,16 @@
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/charliekassel/vuejs-uploader"
+  },
+  "bugs": {
+    "url": "https://github.com/charliekassel/vuejs-uploader/issues"
+  },
   "dependencies": {
     "axios": "^0.16.1",
-    "vue": "^2.2.6"
+    "vue": "^2.3.3"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
