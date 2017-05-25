@@ -32,11 +32,12 @@ npm install vuejs-uploader
 ## Demo
 
 To demo the uploader you need a server, there is a simple php example
-in `servers/php` that uses php's built in server.
+in `server/php` that uses php's built in server.
 
 Other examples will follow.
 
 ```bash
-cd servers/php
+chmod 777 server/php
+cd server/php
 php -S localhost:5000
 ```
