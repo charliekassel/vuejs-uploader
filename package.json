@@ -1,6 +1,6 @@
 {
   "name": "vuejs-uploader",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Vue multipart uploader component",
   "author": "Charlie Kassel <ck@charliekassel.com>",
   "private": false,
