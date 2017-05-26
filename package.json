@@ -11,10 +11,6 @@
   "private": false,
   "license": "MIT",
   "main": "dist/build.js",
-  "files": [
-    "dist/build.js",
-    "dist/build.js.map"
-  ],
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
