@@ -23,7 +23,7 @@
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
-    "prepublish": "npm run build"
+    "dist": "cd dist && npm run prepublish"
   },
   "repository": {
     "type": "git",
