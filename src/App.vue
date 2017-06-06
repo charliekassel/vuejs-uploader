@@ -1,16 +1,19 @@
 <template>
   <div id="app">
-    <uploader end-point="http://localhost:5000" :multiple="true" :multipart="true"></uploader>
+    <uploader end-point="http://localhost:5000" :multipart="true">
+      <img-placeholder :show-ratio="true" slot="button"></img-placeholder>
+    </uploader>
   </div>
 </template>
 
 <script>
 import Uploader from './components/Uploader'
-
+import ImgPlaceholder from 'vuejs-image-placeholder'
 export default {
   name: 'app',
   components: {
-    Uploader
+    Uploader,
+    ImgPlaceholder
   }
 }
 </script>

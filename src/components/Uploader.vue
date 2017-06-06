@@ -1,13 +1,15 @@
 <template>
   <div class="vuejs-uploader">
-    <label class="vuejs-uploader__btn">
-      Browse
+    <label>
+      <slot name="button"><span class="vuejs-uploader__btn">Browse</span></slot>
       <input type="file" :multiple="multiple" @change="addFiles">
     </label>
-    <button type="button" class="vuejs-uploader__btn" @click="upload">Upload</button>
-    <button type="button" class="vuejs-uploader__btn" @click="clear">Clear</button>
+    <span v-if="multiple">
+      <button type="button" class="vuejs-uploader__btn" @click="upload">Upload</button>
+      <button type="button" class="vuejs-uploader__btn" @click="clear">Clear</button>
+    </span>
     <div v-if="errorMessage" class="vuejs-uploader__error">{{ errorMessage }}</div>
-    <ul class="vuejs-uploader__queue">
+    <ul class="vuejs-uploader__queue" v-if="multiple">
       <li v-for="fileObj in this.files" class="vuejs-uploader__file">
         <div class="vuejs-uploader__file--preview">
           <div class="loading" v-if="fileObj.constructor.name === 'ImageUpload' && !fileObj.image"></div>
@@ -22,14 +24,17 @@
           </div>
         </div>
         <div>
-          <button type="button" class="vuejs-uploader__btn vuejs-uploader__btn--delete" @click="removeFile(fileObj)">x</button>
+          <button type="button" class="vuejs-uploader__btn vuejs-uploader__btn--delete" @click="removeFile(fileObj)">Remove</button>
         </div>
       </li>
     </ul>
   </div>
 </template>
-
 <script>
+/**
+ * @TODO
+ * Allow axios config to be passed via prop
+ */
 import axios from 'axios'
 import FileUpload from '../FileUpload'
 import ImageUpload from '../ImageUpload'
@@ -210,6 +215,10 @@ export default {
           this.files.push(fileObj)
         }
       })
+      // start upload if queue is not being used i.e not multiple
+      if (!this.multiple) {
+        this.upload()
+      }
     },
 
     /**
@@ -353,7 +362,10 @@ export default {
 </script>
 <style lang="stylus">
 .vuejs-uploader
-  width 400px
+  label
+    cursor pointer
+  [type=file]
+    display none
 
 .vuejs-uploader__error
   background pink
@@ -376,17 +388,6 @@ export default {
   background inherit
   font-family inherit
   margin-right 2px
-  [type=file]
-    cursor: inherit;
-    display: block;
-    font-size: 999px;
-    min-height: 100%;
-    min-width: 100%;
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    text-align: right;
-    top: 0;
 
 .vuejs-uploader__btn--delete
   padding 3px 6px
