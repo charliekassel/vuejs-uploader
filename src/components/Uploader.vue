@@ -5,14 +5,15 @@
         <span class="vuejs-uploader__btn">Browse</span>
         <p v-if="files[0] && files[0].error">{{ files[0].error }}</p>
       </slot>
+      <span v-if="isMultipleFileUpload" class="vuejs-uploader__btn">Browse</span>
       <input type="file" :multiple="multiple" @change="addFiles">
     </label>
-    <span v-if="isMultiplFileUpload">
+    <span v-if="isMultipleFileUpload">
       <button type="button" class="vuejs-uploader__btn" @click="upload">Upload</button>
       <button type="button" class="vuejs-uploader__btn" @click="clear">Clear</button>
     </span>
     <div v-if="errorMessage" class="vuejs-uploader__error">{{ errorMessage }}</div>
-    <ul class="vuejs-uploader__queue" v-if="isMultiplFileUpload">
+    <ul class="vuejs-uploader__queue" v-if="isMultipleFileUpload">
       <li v-for="fileObj in this.files" class="vuejs-uploader__file">
         <div class="vuejs-uploader__file--preview">
           <div class="loading" v-if="fileObj.constructor.name === 'ImageUpload' && !fileObj.image"></div>
@@ -111,7 +112,7 @@ export default {
     isSingleFileUpload () {
       return !this.multiple
     },
-    isMultiplFileUpload () {
+    isMultipleFileUpload () {
       return this.multiple
     }
   },

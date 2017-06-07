@@ -1,8 +1,15 @@
 <template>
   <div id="app">
-    <uploader end-point="http://localhost:5000" :multipart="true">
-      <img-placeholder :show-ratio="true" :width="200" :height="150" slot="browse"></img-placeholder>
-    </uploader>
+    <ul>
+      <li>Single file uploader
+        <uploader end-point="http://localhost:5000" :multipart="true">
+          <img-placeholder :width="200" :height="150" slot="browse"></img-placeholder>
+        </uploader>
+      </li>
+      <li>Multiple File uploader
+        <uploader end-point="http://localhost:5000" :multipart="true" :multiple="true"></uploader>
+      </li>
+    </ul>
   </div>
 </template>
 
