@@ -29,11 +29,11 @@ Multiple Files
 Multipart upload, with custom Browse button using `slot` api
 ```html
 <uploader end-point="http://localhost:5000" :multipart="true">
-    <button>Select File</button>
+    <button slot="browse">Select File</button>
 </uploader>
 
 <uploader end-point="http://localhost:5000" :multipart="true">
-    <img src="someimg.jpg" />
+    <img slot="browse" src="someimg.jpg" />
 </uploader>
 ```
 
