@@ -3,7 +3,7 @@
     <label>
       <slot name="browse" v-if="isSingleFileUpload">
         <span class="vuejs-uploader__btn">Browse</span>
-        <p v-if="files[0].error">{{ files[0].error }}</p>
+        <p v-if="files[0] && files[0].error">{{ files[0].error }}</p>
       </slot>
       <input type="file" :multiple="multiple" @change="addFiles">
     </label>

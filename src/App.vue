@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <uploader end-point="http://localhost:5000" :multipart="true">
-      <img-placeholder :show-ratio="true" slot="browse"></img-placeholder>
+      <img-placeholder :show-ratio="true" :width="200" :height="150" slot="browse"></img-placeholder>
     </uploader>
   </div>
 </template>
