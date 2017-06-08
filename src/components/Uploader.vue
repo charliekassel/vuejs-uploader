@@ -180,9 +180,11 @@ export default {
             }
           }
         }
+        data.append('multipart', true)
         data.append('file', blob)
         data.append('filename', fileObj.file.name)
-        data.append('multipart', true)
+        data.append('totalSize', fileObj.file.size)
+        data.append('partSize', this.multipartChunkSize)
         data.append('totalParts', totalParts)
         data.append('currentPart', currentPart)
         axios.post(this.endPoint, data, config)
