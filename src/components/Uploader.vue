@@ -2,10 +2,12 @@
   <div class="vuejs-uploader">
     <label>
       <!-- Customisable slot for single file uploads -->
-      <slot name="browse" v-if="isSingleFileUpload">
-        <span class="vuejs-uploader__btn">Browse</span>
+      <span v-if="isSingleFileUpload">
+        <slot name="browse">
+          <span class="vuejs-uploader__btn">Browse</span>
+        </slot>
         <p v-if="files[0] && files[0].error">{{ files[0].error }}</p>
-      </slot>
+      </span>
 
       <span v-if="isMultipleFileUpload" class="vuejs-uploader__btn">Browse</span>
       <!-- File Input -->
