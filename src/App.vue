@@ -1,12 +1,12 @@
 <template>
   <div id="app">
     <ul>
-      <li>Single file uploader
+      <li>Single file multipart uploader
         <uploader end-point="http://localhost:5000" :multipart="true">
           <img-placeholder :width="200" :height="150" slot="browse"></img-placeholder>
         </uploader>
       </li>
-      <li>Multiple File uploader
+      <li>Multiple File multipart uploader
         <uploader end-point="http://localhost:5000" :multipart="true" :multiple="true"></uploader>
       </li>
     </ul>

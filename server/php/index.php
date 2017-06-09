@@ -111,7 +111,7 @@ class Uploader
             return;
         }
 
-        switch ($fileError) {
+        switch ($uploadError) {
             case 1:
                 $error = 'UPLOAD_ERR_INI_SIZE';
                 $message = 'The uploaded file exceeds the upload_max_filesize directive in php.ini.';
@@ -173,7 +173,7 @@ class Uploader
         }
         fclose($out);
 
-        foreach($files as $file){
+        foreach($files as $file) {
             unlink($file);
         }
     }

@@ -1,18 +1,26 @@
 <template>
   <div class="vuejs-uploader">
     <label>
+      <!-- Customisable slot for single file uploads -->
       <slot name="browse" v-if="isSingleFileUpload">
         <span class="vuejs-uploader__btn">Browse</span>
         <p v-if="files[0] && files[0].error">{{ files[0].error }}</p>
       </slot>
+
       <span v-if="isMultipleFileUpload" class="vuejs-uploader__btn">Browse</span>
+      <!-- File Input -->
       <input type="file" :multiple="multiple" @change="addFiles">
     </label>
+
     <span v-if="isMultipleFileUpload">
       <button type="button" class="vuejs-uploader__btn" @click="upload">Upload</button>
       <button type="button" class="vuejs-uploader__btn" @click="clear">Clear</button>
     </span>
+
+    <!-- Errors -->
     <div v-if="errorMessage" class="vuejs-uploader__error">{{ errorMessage }}</div>
+
+    <!-- File list -->
     <ul class="vuejs-uploader__queue" v-if="isMultipleFileUpload">
       <li v-for="fileObj in this.files" class="vuejs-uploader__file">
         <div class="vuejs-uploader__file--preview">
@@ -38,6 +46,7 @@
 /**
  * @TODO
  * Allow axios config to be passed via prop
+ * Maximum concurrent requests!
  */
 import axios from 'axios'
 import FileUpload from '../FileUpload'
@@ -162,22 +171,21 @@ export default {
 
     /**
      * Upload a file in chunks
+     * This creates an array of parts to be uploaded
      *
      * @param  {FileUpload} fileObj
      */
     multipartUploadFile (fileObj) {
       const totalParts = Math.ceil(fileObj.file.size / this.multipartChunkSize)
       let i = 1
+      const queue = []
       do {
         const currentPart = i
         const blob = this.getFileChunk(fileObj, currentPart)
         const data = new FormData()
         const config = {
           onUploadProgress: (progressEvent) => {
-            let p = fileObj.setMultipartProgress(progressEvent, totalParts, currentPart)
-            if (p === 100) {
-              this.$emit('fileUploaded', fileObj)
-            }
+            fileObj.setMultipartProgress(progressEvent, totalParts, currentPart)
           }
         }
         data.append('multipart', true)
@@ -187,15 +195,38 @@ export default {
         data.append('partSize', this.multipartChunkSize)
         data.append('totalParts', totalParts)
         data.append('currentPart', currentPart)
-        axios.post(this.endPoint, data, config)
-          .then((res) => {
-            this.$emit('chunkUploaded', fileObj, currentPart)
-          })
-          .catch((error) => {
-            fileObj.error = error.response.data
-          })
+        queue.push({
+          data: data,
+          config: config,
+          fileObj: fileObj,
+          currentPart: currentPart
+        })
         i++
       } while (i <= totalParts)
+
+      this.processQueue(queue, fileObj)
+    },
+
+    /**
+     * Process the multipart queue, make one request at a time
+     *
+     * @param  {Array} queue
+     * @param  {FileUpload} fileObj
+     */
+    processQueue (queue, fileObj) {
+      if (!queue.length) {
+        this.$emit('fileUploaded', fileObj)
+        return true
+      }
+      const part = queue.shift()
+      axios.post(this.endPoint, part.data, part.config)
+        .then((res) => {
+          this.$emit('chunkUploaded', part.fileObj, part.currentPart)
+          this.processQueue(queue, fileObj)
+        })
+        .catch((error) => {
+          part.fileObj.error = error.response.data
+        })
     },
 
     /**
@@ -231,6 +262,8 @@ export default {
       if (!this.multiple) {
         this.upload()
       }
+
+      this.browse = null
     },
 
     /**
@@ -259,7 +292,9 @@ export default {
       let fileObj
       if (this.isImage(file)) {
         fileObj = new ImageUpload(file)
-        this.getImage(fileObj)
+        if (this.isMultipleFileUpload) {
+          this.getImage(fileObj)
+        }
         return fileObj
       }
       return new FileUpload(file)
@@ -271,6 +306,7 @@ export default {
      * @param  {File} file
      */
     removeFile (file) {
+      this.$el.querySelector('input[type=file]').value = null
       this.resetError()
       const index = this.files.indexOf(file)
       this.files.splice(index, 1)
