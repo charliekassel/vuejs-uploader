@@ -161,8 +161,8 @@ export default {
         }
       }
       axios.post(this.endPoint, data, config)
-        .then((res) => {
-          this.$emit('fileUploaded', fileObj)
+        .then((response) => {
+          this.$emit('fileUploaded', response.data)
         })
         .catch((error) => {
           fileObj.error = error.response.data
@@ -213,17 +213,18 @@ export default {
      *
      * @param  {Array} queue
      * @param  {FileUpload} fileObj
+     * @param  {Object} response
      */
-    processQueue (queue, fileObj) {
+    processQueue (queue, fileObj, response) {
       if (!queue.length) {
-        this.$emit('fileUploaded', fileObj)
+        this.$emit('fileUploaded', response)
         return true
       }
       const part = queue.shift()
       axios.post(this.endPoint, part.data, part.config)
-        .then((res) => {
+        .then((response) => {
           this.$emit('chunkUploaded', part.fileObj, part.currentPart)
-          this.processQueue(queue, fileObj)
+          this.processQueue(queue, fileObj, response.data)
         })
         .catch((error) => {
           part.fileObj.error = error.response.data
