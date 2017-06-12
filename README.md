@@ -48,6 +48,7 @@ Multipart upload, with custom Browse button using `slot` api
 |maxUploads        |Number  |        |5      |Maximum number of file that can be added to the queue|
 |maxThumbWidth     |Number  |        |80     |Maximum width of preview image created|
 |maxThumbHeight    |Number  |        |80     |Maximum height of preview image created|
+|accept            |String  |        |       |Mime types to accept|
 
 ## Demo
 

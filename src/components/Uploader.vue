@@ -11,7 +11,7 @@
 
       <span v-if="isMultipleFileUpload" class="vuejs-uploader__btn">Browse</span>
       <!-- File Input -->
-      <input type="file" :multiple="multiple" @change="addFiles">
+      <input type="file" :multiple="multiple" :accept="accept" @change="addFiles">
     </label>
 
     <span v-if="isMultipleFileUpload">
@@ -62,6 +62,13 @@ export default {
     endPoint: {
       type: String,
       required: true
+    },
+    /**
+     * Accept list of mimes
+     * @type {String}
+     */
+    accept: {
+      type: String
     },
     /**
      * Upload multiple files at once
@@ -264,6 +271,7 @@ export default {
       })
       // start upload if queue is not being used i.e not multiple
       if (!this.multiple) {
+        this.resetError()
         this.upload()
       }
 
