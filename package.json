@@ -1,6 +1,6 @@
 {
   "name": "vuejs-uploader",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Vue multipart uploader component",
   "keywords": [
     "vue",
