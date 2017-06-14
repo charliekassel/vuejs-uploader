@@ -249,7 +249,7 @@ export default {
      * @return {Array}
      */
     cleanQueue (queue, response) {
-      if (response.remainingParts) {
+      if (response && response.remainingParts) {
         return queue.filter(item => item.currentPart.indexOf(response.remainingParts) === -1)
       }
       return queue
