@@ -248,7 +248,7 @@ export default {
      * @param  {Object} response
      * @return {Array}
      */
-    cleanQeue (queue, response) {
+    cleanQueue (queue, response) {
       if (response.remainingParts) {
         return queue.filter(item => item.currentPart.indexOf(response.remainingParts) === -1)
       }
