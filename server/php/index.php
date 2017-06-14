@@ -46,7 +46,10 @@ class Uploader
             if ($this->isMultipartUpload()) {
                 $this->mergeMultiUpload(self::UPLOAD_DIR . $_POST['filename'], (int)$_POST['totalParts']);
             }
-            return $this->response(200, ['message' => $this->getSuccessMessage()]);
+            return $this->response(200, [
+                'message' => $this->getSuccessMessage(),
+                'remainingParts' => []
+            ]);
         }
 
         return $this->response(500, ['error' => 'Unknown Error']);

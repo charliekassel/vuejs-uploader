@@ -225,11 +225,11 @@ export default {
      * @param  {Object} response
      */
     processQueue (queue, fileObj, response) {
+      queue = this.cleanQueue(queue, response)
       if (!queue.length) {
         this.$emit('fileUploaded', response)
         return true
       }
-      queue = this.cleanQueue(queue, response)
       const part = queue.shift()
       axios.post(this.endPoint, part.data, part.config)
         .then((response) => {
@@ -250,7 +250,7 @@ export default {
      */
     cleanQueue (queue, response) {
       if (response && response.remainingParts) {
-        return queue.filter(item => item.currentPart.indexOf(response.remainingParts) === -1)
+        return queue.filter(item => response.remainingParts.indexOf(item.currentPart) === -1)
       }
       return queue
     },
