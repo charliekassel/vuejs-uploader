@@ -229,6 +229,7 @@ export default {
         this.$emit('fileUploaded', response)
         return true
       }
+      queue = this.cleanQueue(queue, response)
       const part = queue.shift()
       axios.post(this.endPoint, part.data, part.config)
         .then((response) => {
@@ -238,6 +239,20 @@ export default {
         .catch((error) => {
           part.fileObj.error = error.response.data
         })
+    },
+
+    /**
+     * Removes from the queue any parts that have already been uploaded
+     *
+     * @param  {Array} queue
+     * @param  {Object} response
+     * @return {Array}
+     */
+    cleanQeue (queue, response) {
+      if (response.remainingParts) {
+        return queue.filter(item => item.currentPart.indexOf(response.remainingParts) === -1)
+      }
+      return queue
     },
 
     /**
