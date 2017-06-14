@@ -250,7 +250,7 @@ export default {
      */
     cleanQueue (queue, response) {
       if (response && response.remainingParts) {
-        return queue.filter(item => response.remainingParts.indexOf(item.currentPart) === -1)
+        return queue.filter(item => response.remainingParts.indexOf(item.currentPart) !== -1)
       }
       return queue
     },
