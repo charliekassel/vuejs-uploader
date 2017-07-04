@@ -15,7 +15,7 @@
     </label>
 
     <span v-if="isMultipleFileUpload">
-      <button type="button" class="vuejs-uploader__btn" @click="upload">Upload</button>
+      <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isDisabled">Upload</button>
       <button type="button" class="vuejs-uploader__btn" @click="clear">Clear</button>
     </span>
 
@@ -33,9 +33,13 @@
           <p class="vuejs-uploader__file--filename">{{ fileObj.file.name }}</p>
           <p class="vuejs-uploader__file--filesize">{{ fileSize(fileObj.file.size) }}</p>
           <p v-if="fileObj.error">{{ fileObj.error }}</p>
+
+          <slot name="extra" :fileObj="fileObj"></slot>
+
           <div class="vuejs-uploader__progress">
             <div class="vuejs-uploader__progress-bar" :style="progressBarStyle(fileObj)"></div>
           </div>
+
         </div>
         <div>
           <button type="button" class="vuejs-uploader__btn vuejs-uploader__btn--delete" @click="removeFile(fileObj)">Remove</button>
@@ -48,7 +52,6 @@
 /**
  * @TODO
  * Allow axios config to be passed via prop
- * Maximum concurrent requests!
  */
 import axios from 'axios'
 import FileUpload from '../FileUpload'
@@ -115,6 +118,12 @@ export default {
     maxThumbHeight: {
       type: Number,
       default: 80
+    },
+    /**
+     * Array of additional data properties to add to the FileObj
+     */
+    userDefinedProperties: {
+      type: Array
     }
   },
   data () {
@@ -132,6 +141,19 @@ export default {
     },
     isMultipleFileUpload () {
       return this.multiple
+    },
+    isDisabled () {
+      let completeRequired = true
+      if (this.userDefinedProperties) {
+        this.userDefinedProperties.forEach(prop => {
+          this.files.forEach(file => {
+            if (prop.required && !file[prop.property]) {
+              completeRequired = false
+            }
+          })
+        })
+      }
+      return !this.files.length || !completeRequired
     }
   },
   methods: {
@@ -162,8 +184,10 @@ export default {
         return true
       }
 
-      const data = new FormData()
+      let data = new FormData()
       data.append('file', fileObj.file)
+      data = this.appendUserData(fileObj, data)
+
       const config = {
         onUploadProgress: (progressEvent) => {
           fileObj.setProgress(progressEvent)
@@ -320,11 +344,44 @@ export default {
       if (this.isImage(file)) {
         fileObj = new ImageUpload(file)
         if (this.isMultipleFileUpload) {
-          this.getImage(fileObj)
+          this.getPreviewImage(fileObj)
         }
-        return fileObj
+      } else {
+        fileObj = new FileUpload(file)
       }
-      return new FileUpload(file)
+
+      return this.appendUserProperties(fileObj)
+    },
+
+    /**
+     * Append user properties to the file obj - useful when adding form elements in the slot
+     *
+     * @param  {FileUpload} fileObj
+     * @return {FileUpload}
+     */
+    appendUserProperties (fileObj) {
+      if (this.userDefinedProperties) {
+        this.userDefinedProperties.forEach(obj => {
+          fileObj[obj.property] = null
+        })
+      }
+      return fileObj
+    },
+
+    /**
+     * Add the user defined properties to the FormData object
+     *
+     * @param  {FileUpload} fileObj
+     * @param  {FormData} formData
+     * @return {FormData}
+     */
+    appendUserData (fileObj, formData) {
+      if (this.userDefinedProperties) {
+        this.userDefinedProperties.forEach(obj => {
+          formData.append(obj.property, fileObj[obj.property])
+        })
+      }
+      return formData
     },
 
     /**
@@ -354,7 +411,7 @@ export default {
      *
      * @param {Object} fileObj
      */
-    getImage (fileObj) {
+    getPreviewImage (fileObj) {
       const reader = new FileReader()
       reader.onload = (e) => {
         this.resizeImage(e.target.result, this.maxThumbWidth, this.maxThumbHeight, fileObj)
