@@ -215,7 +215,7 @@ export default {
       do {
         const currentPart = i
         const blob = this.getFileChunk(fileObj, currentPart)
-        const data = new FormData()
+        let data = new FormData()
         const config = {
           onUploadProgress: (progressEvent) => {
             fileObj.setMultipartProgress(progressEvent, totalParts, currentPart)
@@ -229,6 +229,7 @@ export default {
         data.append('partSize', this.multipartChunkSize)
         data.append('totalParts', totalParts)
         data.append('currentPart', currentPart)
+        data = this.appendUserData(fileObj, data)
         queue.push({
           data: data,
           config: config,
