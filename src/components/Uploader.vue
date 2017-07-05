@@ -3,20 +3,29 @@
     <label>
       <!-- Customisable slot for single file uploads -->
       <span v-if="isSingleFileUpload">
-        <slot name="browse">
+        <slot name="browse-btn">
           <span class="vuejs-uploader__btn">Browse</span>
         </slot>
         <p v-if="files[0] && files[0].error">{{ files[0].error }}</p>
       </span>
 
-      <span v-if="isMultipleFileUpload" class="vuejs-uploader__btn">Browse</span>
+      <span v-if="isMultipleFileUpload">
+        <slot name="browse-btn">
+          <span class="vuejs-uploader__btn">Browse</span>
+        </slot>
+      </span>
       <!-- File Input -->
       <input type="file" :multiple="multiple" :accept="accept" @change="addFiles">
     </label>
 
     <span v-if="isMultipleFileUpload">
-      <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isDisabled">Upload</button>
-      <button type="button" class="vuejs-uploader__btn" @click="clear">Clear</button>
+      <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isDisabled">
+        <slot name="upload-btn">Upload</slot>
+      </button>
+      <button type="button" class="vuejs-uploader__btn" @click="clear">
+        <slot name="clear-btn">Clear</slot>
+      </button>
+      </slot>
     </span>
 
     <!-- Errors -->
