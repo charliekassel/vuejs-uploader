@@ -50,7 +50,9 @@
 
         </div>
         <div>
-          <button type="button" class="vuejs-uploader__btn vuejs-uploader__btn--delete" @click="removeFile(fileObj)">Remove</button>
+          <button type="button" class="vuejs-uploader__btn vuejs-uploader__btn--delete" @click="removeFile(fileObj)">
+            <slot name="remove-btn">Remove</slot>
+          </button>
         </div>
       </li>
     </ul>
