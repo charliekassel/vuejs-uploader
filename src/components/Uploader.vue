@@ -19,13 +19,12 @@
     </label>
 
     <span v-if="isMultipleFileUpload">
-      <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isDisabled">
-        <slot name="upload-btn">Upload</slot>
-      </button>
       <button type="button" class="vuejs-uploader__btn" @click="clear">
         <slot name="clear-btn">Clear</slot>
       </button>
-      </slot>
+      <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isDisabled">
+        <slot name="upload-btn">Upload</slot>
+      </button>
     </span>
 
     <!-- Errors -->
