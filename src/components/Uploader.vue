@@ -36,10 +36,13 @@
         <div class="vuejs-uploader__file--preview">
           <div class="loading" v-if="fileObj.constructor.name === 'ImageUpload' && !fileObj.image"></div>
           <img :src="fileObj.image" v-if="fileObj.image" />
+
+          <span v-if="fileObj.constructor.name === 'FileUpload'" class="vuejs-uploader__file-icon" :class="fileObj.extension">{{ fileObj.extension }}</span>
+
         </div>
         <div class="vuejs-uploader__file--meta">
           <p class="vuejs-uploader__file--filename">{{ fileObj.file.name }}</p>
-          <p class="vuejs-uploader__file--filesize">{{ fileSize(fileObj.file.size) }}</p>
+          <p class="vuejs-uploader__file--filesize">{{ fileObj.formattedFilesize }}</p>
           <p v-if="fileObj.error">{{ fileObj.error }}</p>
 
           <slot name="extra" :fileObj="fileObj"></slot>
@@ -472,22 +475,6 @@ export default {
     },
 
     /**
-     * Formats bytes to human string
-     * @see https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable#answer-20463021
-     * @param  {Number} a
-     * @param  {[type]} b
-     * @param  {[type]} c
-     * @param  {[type]} d
-     * @param  {[type]} e
-     * @return {String}
-     */
-    fileSize (a, b, c, d, e) {
-      const size = (b = Math, c = b.log, d = 1e3, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2) +
-        ' ' + (e ? 'kMGTPEZY'[--e] + 'B' : 'Bytes')
-      return size
-    },
-
-    /**
      * Style object for the progress bar
      *
      * @return {Object}
@@ -575,9 +562,207 @@ export default {
 
 @keyframes spinner
   0%
-    transform: rotate(0deg);
+    transform rotate(0deg)
 
   100%
-    transform: rotate(360deg);
+    transform rotate(360deg)
+
+
+.vuejs-uploader__dir-icon {
+  height 40px
+  width 60px
+  background rgb(141, 202, 247)
+  border-top 3px solid $borderColour
+  line-height 35px
+  text-align center
+  position relative
+  display inline-block
+  color #fff
+  font-weight bold
+  border-radius 0 3px 3px 3px
+  font-size 16px
+
+  &.open {
+    padding-left 6px
+    .dir-icon-open {
+      display block
+    }
+  }
+
+  .dir-icon-open {
+    display none
+    position absolute
+    left 0
+    top 0
+    &:before,
+    &:after {
+      content''
+      position absolute
+      height 0
+      width 0
+      top 0
+    }
+    &:before {
+      left 0
+      border-left 3px solid #acdcfd
+      border-bottom 17px solid #8dcaf7
+      border-right 3px solid #8dcaf7
+      border-top 17px solid #acdcfd
+    }
+    &:after {
+      left 60px
+      border-left 3px solid #8dcaf7
+      border-bottom 17px solid #fff
+      border-right 3px solid #fff
+      border-top 17px solid #8dcaf7
+    }
+  }
+
+
+  &:before,
+  &:after {
+    content''
+    position absolute
+    background $borderColour
+    display inline-block
+  }
+  &:before {
+    top -8px
+    left 0
+    height 6px
+    width 20px
+    border-radius 3px 0 0 0
+  }
+  &:after {
+    top -8px
+    left 20px
+    border 3px solid #fff
+    border-left 3px solid $borderColour
+    border-bottom 3px solid $borderColour
+  }
+}
+
+
+/**
+ * File mixin
+ */
+file($colour) {
+  background: $colour
+  &:after {
+    border-bottom 6px solid lighten($colour, 10%)
+    border-left 6px solid lighten($colour, 10%)
+  }
+}
+
+.vuejs-uploader__file-icon {
+  font-weight bold
+  color #fff
+  border-radius 3px
+  line-height 60px
+  height 60px
+  width 50px
+  text-align center
+  display inline-block
+  text-transform uppercase
+  position relative
+  &:after {
+    content ''
+    position absolute
+    top 0
+    right 0
+    border-top 6px solid #fff
+    border-right 6px solid #fff
+  }
+
+  file(rgb(120, 120, 120))
+
+  /**
+   * App specific branded colours
+   */
+  &.doc
+  &.docx  {
+      file(rgb(75, 99, 158))
+  }
+  &.key {
+      file(rgb(110, 180, 250))
+  }
+  &.numbers {
+      file(rgb(215, 116, 39))
+  }
+  &.pdf {
+      file(rgb(210, 120, 12))
+  }
+  &.pptx {
+     file(rgb(185, 89, 62))
+  }
+  &.psd {
+      file(rgb(125, 210, 249))
+  }
+  &.csv
+  &.xls
+  &.xlsx {
+      file(rgb(78, 120, 83))
+  }
+  &.swf {} // flash
+
+  /**
+   * Generic image
+   */
+  &.arw
+  &.bmp
+  &.cr2
+  &.dng
+  &.tif
+  &.tiff
+  &.raf
+  &.tga {
+      file(rgb(98, 168, 145))
+  }
+
+  /**
+   * Generic video
+   */
+  &.webm
+  &.m4v
+  &.mov
+  &.mp4
+  &.ogv
+  &.vtt {
+      file(rgb(98, 168, 245))
+  }
+
+  /**
+   * Generic video caption
+   */
+  &.mvtt
+  &.sbv
+  &.srt {
+      file(rgb(100, 80, 145))
+  }
+
+  /**
+   * Generic project
+   */
+  &.fcp
+  &.prproj {}
+
+  /**
+   * Generic text
+   */
+  &.eml
+  &.html
+  &.rtf
+  &.txt
+  &.xml {
+      file(rgb(220, 200, 190))
+      color #333
+  }
+
+  /**
+   * Generic compression
+   */
+  &.zip {}
+  &.webarchive {}
+}
 
 </style>

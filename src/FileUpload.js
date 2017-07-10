@@ -1,11 +1,14 @@
+import fileHelpers from '@/helpers/file'
 export default class FileUpload {
   constructor (file) {
     this.file = file
     this.filesize = file.size
+    this.formattedFilesize = fileHelpers.fileSize(file.size)
     this.error = null
     this.percentageUploaded = 0
     this.uploadedParts = []
     this.totalParts = 1
+    this.extension = fileHelpers.fileExtension(file.name)
   }
 
   setProgress (progressEvent) {
