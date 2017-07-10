@@ -208,7 +208,10 @@ export default {
       }
       axios.post(this.endPoint, data, config)
         .then((response) => {
-          this.$emit('fileUploaded', response.data)
+          this.$emit('fileUploaded', {
+            file: fileObj,
+            response: response.data
+          })
         })
         .catch((error) => {
           fileObj.error = error.response.data
@@ -265,14 +268,17 @@ export default {
     processQueue (queue, fileObj, response) {
       queue = this.cleanQueue(queue, response)
       if (!queue.length) {
-        this.$emit('fileUploaded', response)
+        this.$emit('fileUploaded', {
+          file: fileObj,
+          response: response.data
+        })
         return true
       }
       const part = queue.shift()
       axios.post(this.endPoint, part.data, part.config)
         .then((response) => {
           this.$emit('chunkUploaded', part.fileObj, part.currentPart)
-          this.processQueue(queue, fileObj, response.data)
+          this.processQueue(queue, fileObj, response)
         })
         .catch((error) => {
           part.fileObj.error = error.response.data
