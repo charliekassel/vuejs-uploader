@@ -34,6 +34,7 @@
     <ul class="vuejs-uploader__queue" v-if="isMultipleFileUpload">
       <li v-for="fileObj in this.files" class="vuejs-uploader__file">
         <div class="vuejs-uploader__file--preview">
+          {{ fileObj.constructor.name }}
           <div class="loading" v-if="fileObj.constructor.name === 'ImageUpload' && !fileObj.image"></div>
           <img :src="fileObj.image" v-if="fileObj.image" />
 
