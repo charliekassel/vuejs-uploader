@@ -221,6 +221,7 @@ export default {
           })
         })
         .catch((error) => {
+          this.$emit('error', error)
           fileObj.error = error.response.data
         })
     },
@@ -288,6 +289,7 @@ export default {
           this.processQueue(queue, fileObj, response)
         })
         .catch((error) => {
+          this.$emit('error', error)
           part.fileObj.error = error.response.data
         })
     },
