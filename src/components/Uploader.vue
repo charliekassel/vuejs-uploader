@@ -19,7 +19,7 @@
     </label>
 
     <span v-if="isMultipleFileUpload">
-      <button type="button" class="vuejs-uploader__btn" @click="clear">
+      <button type="button" class="vuejs-uploader__btn" @click="clear" :disabled="noFiles">
         <slot name="clear-btn">Clear</slot>
       </button>
       <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isDisabled">
@@ -167,6 +167,9 @@ export default {
         })
       }
       return !this.files.length || !completeRequired
+    },
+    noFiles () {
+      return this.files.length === 0
     }
   },
   methods: {
