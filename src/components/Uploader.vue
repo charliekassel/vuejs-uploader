@@ -6,7 +6,7 @@
         <slot name="browse-btn">
           <span class="vuejs-uploader__btn">Browse</span>
         </slot>
-        <p v-if="files[0] && files[0].error">{{ files[0].error }}</p>
+        <p class="vuejs-uploader__error" v-if="files[0] && files[0].error">{{ files[0].error }}</p>
       </span>
 
       <span v-if="isMultipleFileUpload">
