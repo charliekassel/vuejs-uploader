@@ -34,11 +34,10 @@
     <ul class="vuejs-uploader__queue" v-if="isMultipleFileUpload">
       <li v-for="fileObj in this.files" class="vuejs-uploader__file">
         <div class="vuejs-uploader__file--preview">
-          {{ fileObj.constructor.name }}
-          <div class="loading" v-if="fileObj.constructor.name === 'ImageUpload' && !fileObj.image"></div>
+          <div class="loading" v-if="isImageUpload(fileObj) && !fileObj.image"></div>
           <img :src="fileObj.image" v-if="fileObj.image" />
 
-          <span v-if="fileObj.constructor.name === 'FileUpload'" class="vuejs-uploader__file-icon" :class="fileObj.extension">{{ fileObj.extension }}</span>
+          <span v-if="!isImageUpload(fileObj)" class="vuejs-uploader__file-icon" :class="fileObj.extension">{{ fileObj.extension }}</span>
 
         </div>
         <div class="vuejs-uploader__file--meta">
@@ -185,6 +184,10 @@ export default {
     clear () {
       this.resetError()
       this.files = []
+    },
+
+    isImageUpload (fileObj) {
+      return fileObj.hasOwnProperty('image')
     },
 
     /**
