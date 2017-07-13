@@ -3,9 +3,10 @@
     <h1>Uploader demos</h1>
     <ul>
       <li>Single file multipart uploader
-        <uploader end-point="http://localhost:5000" :multipart="true">
+        <uploader end-point="http://localhost:5000" :multipart="true" :showProgressBar="true" @fileUploaded="demo1Status" @startUpload="resetLog(demo1)">
           <img-placeholder :width="200" :height="150" slot="browse"></img-placeholder>
         </uploader>
+        <pre>{{ demo1 }}</pre>
       </li>
 
       <li>Multiple File multipart uploader
@@ -37,6 +38,19 @@ export default {
   components: {
     Uploader,
     ImgPlaceholder
+  },
+  data () {
+    return {
+      demo1: null
+    }
+  },
+  methods: {
+    demo1Status (response) {
+      this.demo1 = response
+    },
+    resetLog (prop) {
+      this[prop] = null
+    }
   }
 }
 </script>

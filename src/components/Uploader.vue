@@ -7,6 +7,9 @@
           <span class="vuejs-uploader__btn">Browse</span>
         </slot>
         <p class="vuejs-uploader__error" v-if="files[0] && files[0].error">{{ files[0].error }}</p>
+        <div v-if="showProgressBar && files[0]" class="vuejs-uploader__progress">
+          <div class="vuejs-uploader__progress-bar" :style="progressBarStyle(files[0])"></div>
+        </div>
       </span>
 
       <span v-if="isMultipleFileUpload">
@@ -137,6 +140,13 @@ export default {
      */
     userDefinedProperties: {
       type: Array
+    },
+    /**
+     * Show progress bar for single file uploads (shows by default for multiple file uploads)
+     */
+    showProgressBar: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -341,6 +351,7 @@ export default {
       if (!this.multiple) {
         this.resetError()
         this.upload()
+        this.$emit('startUpload')
       }
 
       this.browse = null

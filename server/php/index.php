@@ -48,7 +48,7 @@ class Uploader
             }
             return $this->response(200, [
                 'message' => $this->getSuccessMessage(),
-                'remainingParts' => []
+                // 'remainingParts' => []
             ]);
         }
 
