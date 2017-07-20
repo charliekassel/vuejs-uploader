@@ -68,6 +68,9 @@
 /**
  * @TODO
  * Allow axios config to be passed via prop
+ * Investigate sending files with fetch instead of axios
+ * Listen for 429 header then setTimeout to Retry-after header
+ * Debug cleanQueue method
  */
 import axios from 'axios'
 import FileUpload from '../FileUpload'
@@ -299,6 +302,13 @@ export default {
           this.processQueue(queue, fileObj, response)
         })
         .catch((error) => {
+          if (error.request && error.request.status === 429) {
+            queue.push(part)
+            setTimeout(function () {
+              this.processQueue()
+            }, 60000) // should be from retry-after header
+          }
+
           this.$emit('error', error)
           part.fileObj.error = error.response.data
         })
@@ -312,8 +322,8 @@ export default {
      * @return {Array}
      */
     cleanQueue (queue, response) {
-      if (response && response.remainingParts) {
-        return queue.filter(item => response.remainingParts.indexOf(item.currentPart) !== -1)
+      if (response && response.data && response.data.remainingParts) {
+        return queue.filter(item => response.data.remainingParts.indexOf(item.currentPart) !== -1)
       }
       return queue
     },

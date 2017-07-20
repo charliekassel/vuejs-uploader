@@ -47,12 +47,11 @@ class Uploader
                 $this->mergeMultiUpload(self::UPLOAD_DIR . $_POST['filename'], (int)$_POST['totalParts']);
             }
             return $this->response(200, [
-                'message' => $this->getSuccessMessage(),
-                // 'remainingParts' => []
+                'message' => $this->getSuccessMessage()
             ]);
         }
 
-        return $this->response(500, ['error' => 'Unknown Error']);
+        $this->response(500, ['error' => 'Unknown Error']);
     }
 
     /**
@@ -150,6 +149,50 @@ class Uploader
         ]);
     }
 
+    /**
+     * Get a list of uploaded parts
+     *
+     * @param  string $filename
+     * @return array
+     */
+    private function getUploadedParts(string $filename): array
+    {
+        return glob($filename . ".*");
+    }
+
+    /**
+     * Get a sorted list of uploaded file parts
+     *
+     * @param  string $filename
+     * @return array
+     */
+    private function getSortedParts(string $filename): array
+    {
+        $files = $this->getUploadedParts($filename);
+
+        $sortedFiles = [];
+        array_walk($files, function ($value, $key) use (&$sortedFiles) {
+            $sortedFiles[(int) pathinfo($value)['extension']] = $value;
+        });
+        ksort($sortedFiles);
+
+        return $sortedFiles;
+    }
+
+    /**
+     * Get a numeric array of the remaining parts to be uploaded
+     *
+     * @param string $filename
+     * @param int $totalParts
+     * @return int[]
+     */
+    private function getRemainingParts(string $filename, int $totalParts): array
+    {
+        $uploadedParts = array_keys($this->getSortedParts($filename));
+
+        return array_values(array_diff(range(1, $totalParts), $uploadedParts));
+    }
+
 
     /**
      * Combines the parts of a multipart upload into a single file.
@@ -158,16 +201,20 @@ class Uploader
      * @param  int    $totalParts
      */
     private function mergeMultiUpload(string $filename, int $totalParts) {
-        $files = glob($filename . ".*");
 
-        if (count($files) !== $totalParts) {
-            return false;
+        if (count($this->getUploadedParts($filename)) !== $totalParts) {
+            return $this->response(200, [
+                'message' => $this->getSuccessMessage(),
+                'remainingParts' => $this->getRemainingParts($filename, $totalParts)
+            ]);
         }
+
+        $sortedFiles = $this->getSortedParts($filename);
 
         ini_set('max_execution_time', 300);
 
         $out = fopen($filename, "w");
-        foreach ($files as $file) {
+        foreach ($sortedFiles as $file) {
             $in = fopen($file, "r");
             while ($line = fgets($in)) {
                 fwrite($out, $line);
@@ -176,9 +223,11 @@ class Uploader
         }
         fclose($out);
 
-        foreach($files as $file) {
+        foreach($sortedFiles as $file) {
             unlink($file);
         }
+
+        return true;
     }
 
     /**
