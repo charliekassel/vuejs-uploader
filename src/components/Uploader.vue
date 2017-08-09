@@ -79,71 +79,70 @@ export default {
   props: {
     /**
      * Server end point to send files to
-     * @type {String}
      */
     endPoint: {
       type: String,
       required: true
     },
+
+    /**
+     * Headers
+     */
+    headers: Object,
+
     /**
      * Accept list of mimes
      * @type {String}
      */
-    accept: {
-      type: String
-    },
+    accept: String,
+
     /**
      * Upload multiple files at once
-     * @type {Boolean}
      */
-    multiple: {
-      type: Boolean
-    },
+    multiple: Boolean,
+
     /**
      * Upload larger files as multipart uploads?
-     * @type {Boolean}
      */
-    multipart: {
-      type: Boolean
-    },
+    multipart: Boolean,
+
     /**
      * Multipart upload chunk size
-     * @type {Number}
      */
     multipartChunkSize: {
       type: Number,
       default: 1024 * 1024 * 2 // 2mb
     },
+
     /**
      * Number of files that can be added to the queue
-     * @type {Object}
      */
     maxUploads: {
       type: Number,
       default: 5
     },
+
     /**
      * Maximun preview image width
-     * @type {Object}
      */
     maxThumbWidth: {
       type: Number,
       default: 80
     },
+
     /**
      * Maximun preview image height
-     * @type {Object}
      */
     maxThumbHeight: {
       type: Number,
       default: 80
     },
+
     /**
      * Array of additional data properties to add to the FileObj
      */
-    userDefinedProperties: {
-      type: Array
-    },
+    userDefinedProperties: Array,
+
     /**
      * Show progress bar for single file uploads (shows by default for multiple file uploads)
      */
@@ -154,6 +153,7 @@ export default {
   },
   data () {
     return {
+      axios: null,
       files: [],
       errorMessage: null
     }
@@ -226,7 +226,7 @@ export default {
           fileObj.setProgress(progressEvent)
         }
       }
-      axios.post(this.endPoint, data, config)
+      this.axios.post(this.endPoint, data, config)
         .then((response) => {
           this.$emit('fileUploaded', {
             file: fileObj,
@@ -296,7 +296,7 @@ export default {
         return true
       }
       const part = queue.shift()
-      axios.post(this.endPoint, part.data, part.config)
+      this.axios.post(this.endPoint, part.data, part.config)
         .then((response) => {
           this.$emit('chunkUploaded', part.fileObj, part.currentPart)
           this.processQueue(queue, fileObj, response)
@@ -519,9 +519,21 @@ export default {
       return {
         width: fileObj.percent + '%'
       }
+    },
+
+    /**
+     * Configure axios
+     */
+    configureAxios () {
+      const config = {}
+      if (this.headers) {
+        config.headers = this.headers
+      }
+      this.axios = axios.create(config)
     }
   },
   mounted () {
+    this.configureAxios()
     this.$on('fileUploaded', file => this.removeFile(file))
   }
 }

@@ -28,6 +28,7 @@ class Uploader
     private function allowCors()
     {
         header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
         if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
             exit(0);
         }

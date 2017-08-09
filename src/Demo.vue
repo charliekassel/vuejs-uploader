@@ -26,6 +26,11 @@
           </template>
         </uploader>
       </li>
+
+      <li>Uploading ewith additional headers
+        <uploader end-point="http://localhost:5000" :headers="{Authorization: 'Bearer 123456'}"></uploader>
+      </li>
+
     </ul>
   </div>
 </template>
