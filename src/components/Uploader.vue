@@ -1,12 +1,14 @@
 <template>
   <div class="vuejs-uploader">
     <label>
-      <!-- Customisable slot for single file uploads -->
       <span v-if="isSingleFileUpload">
+        <!-- Customisable slot for single file uploads -->
         <slot name="browse-btn">
           <span class="vuejs-uploader__btn">Browse</span>
         </slot>
-        <p class="vuejs-uploader__error" v-if="files[0] && files[0].error">{{ files[0].error }}</p>
+
+        <p class="vuejs-uploader__error" v-if="files[0] && hasError(files[0])">{{ handleError(files[0].error) }}</p>
+
         <div v-if="showProgressBar && files[0]" class="vuejs-uploader__progress">
           <div class="vuejs-uploader__progress-bar" :style="progressBarStyle(files[0])"></div>
         </div>
@@ -89,6 +91,11 @@ export default {
      * Headers
      */
     headers: Object,
+
+    /**
+     * Error handler
+     */
+    errorHandler: Function,
 
     /**
      * Accept list of mimes
@@ -235,7 +242,12 @@ export default {
         })
         .catch((error) => {
           this.$emit('error', error)
+          if (this.errorHandler) {
+            return this.errorHandler(error)
+          }
+
           fileObj.error = error.response.data
+          return
         })
     },
 
@@ -310,6 +322,10 @@ export default {
           }
 
           this.$emit('error', error)
+          if (this.errorHandler) {
+            return this.errorHandler(error)
+          }
+
           part.fileObj.error = error.response.data
         })
     },
@@ -530,6 +546,27 @@ export default {
         config.headers = this.headers
       }
       this.axios = axios.create(config)
+    },
+
+    /**
+     * @param  {File}
+     * @return {Boolean}
+     */
+    hasError (file) {
+      return Boolean(file.error)
+    },
+
+    /**
+     * Defer to external error handler if configured else return the error message
+     * @param  {Object} error
+     * @return {Function|Object}
+     */
+    handleError (error) {
+      if (typeof this.errorHandler === 'function') {
+        return this.errorHandler(error)
+      }
+
+      return error
     }
   },
   mounted () {

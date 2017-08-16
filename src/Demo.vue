@@ -2,18 +2,21 @@
   <div id="app">
     <h1>Uploader demos</h1>
     <ul>
-      <li>Single file multipart uploader
+      <li>
+        <p>Single file multipart uploader</p>
         <uploader end-point="http://localhost:5000" :multipart="true" :showProgressBar="true" @fileUploaded="demo1Status" @startUpload="resetLog(demo1)">
           <img-placeholder :width="200" :height="150" slot="browse"></img-placeholder>
         </uploader>
         <pre>{{ demo1 }}</pre>
       </li>
 
-      <li>Multiple File multipart uploader
+      <li>
+        <p>Multiple File multipart uploader</p>
         <uploader end-point="http://localhost:5000" :multipart="true" :multiple="true"></uploader>
       </li>
 
-      <li>Multiple File multipart uploader with extra form element slot
+      <li>
+        <p>Multiple File multipart uploader with extra form element slot</p>
         <uploader end-point="http://localhost:5000" :multipart="true" :multiple="true" :userDefinedProperties="[{property: 'type', required: true}]">
           <template slot="extra" scope="props">
             <select v-model="props.fileObj.type">
@@ -27,8 +30,15 @@
         </uploader>
       </li>
 
-      <li>Uploading ewith additional headers
+      <li>
+        <p>Uploading with additional headers</p>
         <uploader end-point="http://localhost:5000" :headers="{Authorization: 'Bearer 123456'}"></uploader>
+      </li>
+
+
+      <li>
+        <p>Using error handler</p>
+        <uploader end-point="http://localhost:5000" :errorHandler="errorHandler"></uploader>
       </li>
 
     </ul>
@@ -55,6 +65,11 @@ export default {
     },
     resetLog (prop) {
       this[prop] = null
+    },
+
+    errorHandler (error) {
+      console.error(error, error.response)
+      alert(error.message)
     }
   }
 }
