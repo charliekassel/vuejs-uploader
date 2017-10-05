@@ -27,7 +27,7 @@
       <button type="button" class="vuejs-uploader__btn" @click="clear" :disabled="noFiles">
         <slot name="clear-btn">Clear</slot>
       </button>
-      <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isDisabled">
+      <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isDisabled" :class="{'vuejs-uploader__btn--ready' : hasFiles}">
         <slot name="upload-btn">Upload</slot>
       </button>
     </span>
@@ -168,6 +168,9 @@ export default {
   computed: {
     getFiles () {
       return this.files
+    },
+    hasFiles () {
+      return !this.noFiles
     },
     isSingleFileUpload () {
       return !this.multiple

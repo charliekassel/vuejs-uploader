@@ -3,9 +3,9 @@
     <h1>Uploader demos</h1>
     <ul>
       <li>
-        <p>Single file multipart uploader</p>
+        <p>Single file multipart uploader with image as Browse button</p>
         <uploader end-point="http://localhost:5000" :multipart="true" :showProgressBar="true" @fileUploaded="demo1Status" @startUpload="resetLog(demo1)">
-          <img-placeholder :width="200" :height="150" slot="browse"></img-placeholder>
+          <img-placeholder :width="200" :height="150" slot="browse-btn">Browse</img-placeholder>
         </uploader>
         <pre>{{ demo1 }}</pre>
       </li>

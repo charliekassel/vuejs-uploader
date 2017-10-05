@@ -6865,9 +6865,9 @@ vue@^2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.3.3.tgz#d1eaa8fde5240735a4563e74f2c7fead9cbb064c"
 
-vuejs-image-placeholder@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/vuejs-image-placeholder/-/vuejs-image-placeholder-0.0.5.tgz#b92cf48b000e049157aa01cf0aa88832b94bca65"
+vuejs-image-placeholder@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/vuejs-image-placeholder/-/vuejs-image-placeholder-0.1.1.tgz#704ee063ff5e4734fa95f0fb04411c9be9c980ed"
   dependencies:
     vue "^2.3.3"
 
