@@ -1,6 +1,6 @@
 {
   "name": "vuejs-uploader",
-  "version": "0.2.12",
+  "version": "0.3.0",
   "description": "Vue multipart uploader component",
   "keywords": [
     "vue",
@@ -32,8 +32,7 @@
   "bugs": {
     "url": "https://github.com/charliekassel/vuejs-uploader/issues"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "autoprefixer": "^6.7.2",
     "axios": "^0.16.1",
