@@ -48,7 +48,7 @@
         <div class="vuejs-uploader__file--meta">
           <p class="vuejs-uploader__file--filename">{{ fileObj.file.name }}</p>
           <p class="vuejs-uploader__file--filesize">{{ fileObj.formattedFilesize }}</p>
-          <p v-if="fileObj.error">{{ fileObj.error }}</p>
+          <p v-if="fileObj.error">{{ handlerError(fileObj.error) }}</p>
 
           <slot name="extra" :fileObj="fileObj"></slot>
 
