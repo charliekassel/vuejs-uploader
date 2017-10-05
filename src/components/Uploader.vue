@@ -1,5 +1,9 @@
 <template>
-  <div class="vuejs-uploader">
+  <div class="vuejs-uploader"
+    @drop.stop.prevent="dropFiles"
+    @dragover.stop.prevent="dragover"
+    @dragleave="dragleave"
+    :class="{'vuejs-uploader--dragged' : isDraggedOver}">
     <label>
       <span v-if="isSingleFileUpload">
         <!-- Customisable slot for single file uploads -->
@@ -20,8 +24,9 @@
         </slot>
       </span>
       <!-- File Input -->
-      <input type="file" :multiple="multiple" :accept="accept" @change="addFiles">
+      <input type="file" :multiple="multiple" :accept="accept" @change="selectFiles">
     </label>
+
 
     <span v-if="isMultipleFileUpload">
       <button type="button" class="vuejs-uploader__btn" @click="clear" :disabled="noFiles">
@@ -48,7 +53,8 @@
         <div class="vuejs-uploader__file--meta">
           <p class="vuejs-uploader__file--filename">{{ fileObj.file.name }}</p>
           <p class="vuejs-uploader__file--filesize">{{ fileObj.formattedFilesize }}</p>
-          <p v-if="fileObj.error">{{ handlerError(fileObj.error) }}</p>
+
+          <p v-if="fileObj.error">{{ handleError(fileObj.error) }}</p>
 
           <slot name="extra" :fileObj="fileObj"></slot>
 
@@ -162,7 +168,8 @@ export default {
     return {
       axios: null,
       files: [],
-      errorMessage: null
+      errorMessage: null,
+      isDraggedOver: null
     }
   },
   computed: {
@@ -196,6 +203,12 @@ export default {
     }
   },
   methods: {
+    dragover () {
+      this.isDraggedOver = true
+    },
+    dragleave () {
+      this.isDraggedOver = false
+    },
     /**
      * Initiate the upload
      */
@@ -245,12 +258,7 @@ export default {
         })
         .catch((error) => {
           this.$emit('error', error)
-          if (this.errorHandler) {
-            return this.errorHandler(error)
-          }
-
           fileObj.error = error.response.data
-          return
         })
     },
 
@@ -325,10 +333,6 @@ export default {
           }
 
           this.$emit('error', error)
-          if (this.errorHandler) {
-            return this.errorHandler(error)
-          }
-
           part.fileObj.error = error.response.data
         })
     },
@@ -360,13 +364,22 @@ export default {
       return fileObj.file.slice(start, end)
     },
 
+    selectFiles (event) {
+      this.addFiles(event.target.files)
+    },
+
+    dropFiles (event) {
+      this.isDraggedOver = false
+      this.addFiles(event.dataTransfer.files)
+    },
+
     /**
      * Add file(s) to the file list
      *
-     * @param {Event} event
+     * @param {FileList}
      */
-    addFiles (event) {
-      Array.from(event.target.files).forEach(file => {
+    addFiles (files) {
+      Array.from(files).forEach(file => {
         if (this.files.length === this.maxUploads) {
           this.setError('Only ' + this.maxUploads + ' files can be uploaded at one time')
           return false
@@ -532,12 +545,13 @@ export default {
     /**
      * Style object for the progress bar
      *
+     * @param {FileObj}
      * @return {Object}
      */
     progressBarStyle (fileObj) {
-      return {
-        width: fileObj.percent + '%'
-      }
+      return this.isMultipleFileUpload
+        ? { width: fileObj.percentageUploaded + '%' }
+        : { width: fileObj.percent + '%' }
     },
 
     /**
@@ -632,10 +646,19 @@ export default {
   vertical-align top
   margin 0
 
+
+.vuejs-uploader__progress
+  position relative
+  height 6px
+  border-radius 3px
+  background #eee
+
 .vuejs-uploader__progress-bar
   display inline-block
-  height 2px
+  height 6px
   background limegreen
+  position absolute
+  border-radius 3px
 
 .loading:after
   content ''

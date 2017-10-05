@@ -16,8 +16,8 @@
       </li>
 
       <li>
-        <p>Multiple File multipart uploader with extra form element slot</p>
-        <uploader end-point="http://localhost:5000" :multipart="true" :multiple="true" :userDefinedProperties="[{property: 'type', required: true}]">
+        <p>Multiple File uploader with extra form element slot</p>
+        <uploader end-point="http://localhost:5000" :multiple="true" :userDefinedProperties="[{property: 'type', required: true}]">
           <template slot="extra" scope="props">
             <select v-model="props.fileObj.type">
               <option :value="null">select type</option>

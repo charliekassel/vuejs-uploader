@@ -7,6 +7,7 @@ This get's around max upload sizes allowing you to upload large files.
 
 If prop `multiple` is true a file list is rendered on selecting files otherwise file upload will begin on selection.
 
+Drag is supported and when files are dragged over the uploader the class `vuejs-uploader--dragged` is added to the root element.
 
 ## Install
 
@@ -50,6 +51,8 @@ Multipart upload, with custom Browse button using `slot` api
 |maxThumbHeight       |Number  |        |80     |Maximum height of preview image created|
 |accept               |String  |        |       |Mime types to accept|
 |userDefinedProperties|Array   |        |       |array of objects defined with `property` and optional `required` properties|
+|errorHandler         |Function|        |       |Function passed in to handle http errors|
+|headers              |Object  |        |       |Headers can be added to the http requests|
 
 ## Demo
 
