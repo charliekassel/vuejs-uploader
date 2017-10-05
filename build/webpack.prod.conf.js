@@ -17,10 +17,6 @@ var webpackConfig = merge(baseWebpackConfig, {
   },
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   entry: '@/components/Uploader.vue',
-  externals: {
-    vue: 'vue',
-    axios: 'axios'
-  },
   output: {
     path: config.build.assetsRoot,
     filename: 'build.js',
