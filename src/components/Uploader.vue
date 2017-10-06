@@ -185,6 +185,9 @@ export default {
     isMultipleFileUpload () {
       return this.multiple
     },
+    isMultipartUpload () {
+      return this.multipart
+    },
     isDisabled () {
       let completeRequired = true
       if (this.userDefinedProperties) {
@@ -325,6 +328,7 @@ export default {
           this.processQueue(queue, fileObj, response)
         })
         .catch((error) => {
+          console.error(error)
           if (error.request && error.request.status === 429) {
             queue.push(part)
             setTimeout(function () {
@@ -549,7 +553,7 @@ export default {
      * @return {Object}
      */
     progressBarStyle (fileObj) {
-      return this.isMultipleFileUpload
+      return this.isMultipartUpload
         ? { width: fileObj.multipartUploadPercent + '%' }
         : { width: fileObj.singlepartUploadPercent + '%' }
     },
