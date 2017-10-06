@@ -33,7 +33,11 @@ export default class FileUpload {
     }
   }
 
-  get percent () {
+  get singlepartUploadPercent () {
+    return this.percentageUploaded
+  }
+
+  get multipartUploadPercent () {
     const partSize = 100 / this.totalParts
     const percent = this.uploadedParts.reduce((acc, val) => {
       return acc + (val.loaded * partSize / 100)

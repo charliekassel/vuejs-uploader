@@ -550,8 +550,8 @@ export default {
      */
     progressBarStyle (fileObj) {
       return this.isMultipleFileUpload
-        ? { width: fileObj.percentageUploaded + '%' }
-        : { width: fileObj.percent + '%' }
+        ? { width: fileObj.multipartUploadPercent + '%' }
+        : { width: fileObj.singlepartUploadPercent + '%' }
     },
 
     /**
