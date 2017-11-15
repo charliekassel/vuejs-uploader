@@ -553,7 +553,7 @@ export default {
      * @return {Object}
      */
     progressBarStyle (fileObj) {
-      return this.isMultipartUpload
+      return this.isMultipartUpload && fileObj.filesize > this.multipartChunkSize
         ? { width: fileObj.multipartUploadPercent + '%' }
         : { width: fileObj.singlepartUploadPercent + '%' }
     },
