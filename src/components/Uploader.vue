@@ -400,9 +400,8 @@ export default {
       })
       // start upload if queue is not being used i.e not multiple
       if (!this.multiple) {
-        this.resetError()
-        this.upload()
         if (this.uploadManual === false) {
+          this.upload()
           this.$emit('startUpload')
         }
       }
@@ -600,6 +599,7 @@ export default {
   mounted () {
     this.configureAxios()
     this.$on('fileUploaded', file => this.removeFile(file))
+    this.$on('startUploadingProcess', this.upload())
   }
 }
 </script>
