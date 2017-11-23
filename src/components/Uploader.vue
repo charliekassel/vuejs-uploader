@@ -120,6 +120,11 @@ export default {
     multipart: Boolean,
 
     /**
+     * Determine autostart upload when file is selected or dropped. If true, it will cancel auto upload
+     */
+    uploadManual: Boolean,
+
+    /**
      * Multipart upload chunk size
      */
     multipartChunkSize: {
@@ -397,7 +402,9 @@ export default {
       if (!this.multiple) {
         this.resetError()
         this.upload()
-        this.$emit('startUpload')
+        if (this.uploadManual === false) {
+          this.$emit('startUpload')
+        }
       }
 
       this.browse = null
