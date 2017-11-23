@@ -43,7 +43,7 @@ Multipart upload, with custom Browse button using `slot` api
 |Prop                 |Type    |Required|Default|Description|
 |---------------------|--------|--------|-------|----------|
 |endPoint             |String  |yup     |       |Server end point to post requests|
-|uploadManual         |Boolean |        | false |It will cancel automatic upload when file selected or dropped|
+|autostart            |Boolean |        | true  |Start uploading to server right after file selected or dropped|
 |multiple             |Boolean |        |       |To allow multiple files to be added to the upload queue|
 |multipart            |Boolean |        |       |Send files larger than `multipartChunkSize` in parts|
 |multipartChunkSize   |Number  |        |2097152|Size of multipart chunks in bytes|

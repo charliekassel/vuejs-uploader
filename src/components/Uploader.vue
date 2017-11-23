@@ -120,9 +120,12 @@ export default {
     multipart: Boolean,
 
     /**
-     * Determine autostart upload when file is selected or dropped. If true, it will cancel auto upload
+     * Determine autostart upload when file is selected or dropped.
      */
-    uploadManual: Boolean,
+    autostart: {
+      type: Boolean,
+      default: true
+    },
 
     /**
      * Multipart upload chunk size
@@ -400,7 +403,7 @@ export default {
       })
       // start upload if queue is not being used i.e not multiple
       if (!this.multiple) {
-        if (this.uploadManual === false) {
+        if (this.autostart === true) {
           this.upload()
           this.$emit('startUpload')
         }
