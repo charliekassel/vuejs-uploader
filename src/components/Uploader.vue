@@ -262,13 +262,13 @@ export default {
       }
       this.axios.post(this.endPoint, data, config)
         .then((response) => {
-          this.$emit('fileUploaded', {
+          this.$bus.$emit('fileUploaded', {
             file: fileObj,
             response: response.data
           })
         })
         .catch((error) => {
-          this.$emit('error', error)
+          this.$bus.$emit('error', error)
           fileObj.error = error.response.data
         })
     },
@@ -323,7 +323,7 @@ export default {
     processQueue (queue, fileObj, response) {
       queue = this.cleanQueue(queue, response)
       if (!queue.length) {
-        this.$emit('fileUploaded', {
+        this.$bus.$emit('fileUploaded', {
           file: fileObj,
           response: response.data
         })
@@ -332,7 +332,7 @@ export default {
       const part = queue.shift()
       this.axios.post(this.endPoint, part.data, part.config)
         .then((response) => {
-          this.$emit('chunkUploaded', part.fileObj, part.currentPart)
+          this.$bus.$emit('chunkUploaded', part.fileObj, part.currentPart)
           this.processQueue(queue, fileObj, response)
         })
         .catch((error) => {
@@ -344,7 +344,7 @@ export default {
             }, 60000) // should be from retry-after header
           }
 
-          this.$emit('error', error)
+          this.$bus.$emit('error', error)
           part.fileObj.error = error.response.data
         })
     },
@@ -405,7 +405,7 @@ export default {
       if (!this.multiple) {
         if (this.autostart === true) {
           this.upload()
-          this.$emit('startUpload')
+          this.$bus.$emit('startUpload')
         }
       }
 
@@ -601,8 +601,7 @@ export default {
   },
   mounted () {
     this.configureAxios()
-    this.$on('fileUploaded', file => this.removeFile(file))
-    // this.$on('startUploadingProcess', this.upload)
+    this.$bus.$on('fileUploaded', file => this.removeFile(file))
     this.$bus.$on('startUploadingProcess', this.upload)
   }
 }
