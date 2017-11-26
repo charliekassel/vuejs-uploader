@@ -602,7 +602,8 @@ export default {
   mounted () {
     this.configureAxios()
     this.$on('fileUploaded', file => this.removeFile(file))
-    this.$on('startUploadingProcess', this.upload())
+    // this.$on('startUploadingProcess', this.upload)
+    this.$bus.$on('startUploadingProcess', this.upload)
   }
 }
 </script>
