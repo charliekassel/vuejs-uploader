@@ -1,6 +1,6 @@
 {
-  "name": "vuejs-uploader",
-  "version": "0.3.4",
+  "name": "shibby-vuejs-uploader",
+  "version": "0.3.5",
   "description": "Vue multipart uploader component",
   "keywords": [
     "vue",
