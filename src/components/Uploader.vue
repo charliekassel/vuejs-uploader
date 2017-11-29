@@ -5,17 +5,11 @@
     @dragleave="dragleave"
     :class="{'vuejs-uploader--dragged' : isDraggedOver}">
     <label>
-      <span v-if="isSingleFileUpload">
+      <span v-if="isSingleFileUpload && !hasFiles">
         <!-- Customisable slot for single file uploads -->
         <slot name="browse-btn">
           <span class="vuejs-uploader__btn">Browse</span>
         </slot>
-
-        <p class="vuejs-uploader__error" v-if="files[0] && hasError(files[0])">{{ handleError(files[0].error) }}</p>
-
-        <div v-if="showProgressBar && files[0]" class="vuejs-uploader__progress">
-          <div class="vuejs-uploader__progress-bar" :style="progressBarStyle(files[0])"></div>
-        </div>
       </span>
 
       <span v-if="isMultipleFileUpload">
@@ -41,7 +35,7 @@
     <div v-if="errorMessage" class="vuejs-uploader__error">{{ errorMessage }}</div>
 
     <!-- File list -->
-    <ul class="vuejs-uploader__queue" v-if="isMultipleFileUpload">
+    <ul class="vuejs-uploader__queue" v-if="this.files">
       <li v-for="fileObj in this.files" class="vuejs-uploader__file">
         <div class="vuejs-uploader__file--preview">
           <div class="loading" v-if="isImageUpload(fileObj) && !fileObj.image"></div>
@@ -177,7 +171,7 @@ export default {
       axios: null,
       files: [],
       errorMessage: null,
-      isDraggedOver: null
+      isDraggedOver: null,
     }
   },
   computed: {
