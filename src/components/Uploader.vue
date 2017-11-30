@@ -171,7 +171,7 @@ export default {
       axios: null,
       files: [],
       errorMessage: null,
-      isDraggedOver: null,
+      isDraggedOver: null
     }
   },
   computed: {
