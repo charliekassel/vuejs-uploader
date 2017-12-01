@@ -5,17 +5,11 @@
     @dragleave="dragleave"
     :class="{'vuejs-uploader--dragged' : isDraggedOver}">
     <label>
-      <span v-if="isSingleFileUpload">
+      <span v-if="isSingleFileUpload && !hasFiles">
         <!-- Customisable slot for single file uploads -->
         <slot name="browse-btn">
           <span class="vuejs-uploader__btn">Browse</span>
         </slot>
-
-        <p class="vuejs-uploader__error" v-if="files[0] && hasError(files[0])">{{ handleError(files[0].error) }}</p>
-
-        <div v-if="showProgressBar && files[0]" class="vuejs-uploader__progress">
-          <div class="vuejs-uploader__progress-bar" :style="progressBarStyle(files[0])"></div>
-        </div>
       </span>
 
       <span v-if="isMultipleFileUpload">
@@ -41,7 +35,7 @@
     <div v-if="errorMessage" class="vuejs-uploader__error">{{ errorMessage }}</div>
 
     <!-- File list -->
-    <ul class="vuejs-uploader__queue" v-if="isMultipleFileUpload">
+    <ul class="vuejs-uploader__queue" v-if="this.files">
       <li v-for="fileObj in this.files" class="vuejs-uploader__file">
         <div class="vuejs-uploader__file--preview">
           <div class="loading" v-if="isImageUpload(fileObj) && !fileObj.image"></div>
@@ -118,6 +112,14 @@ export default {
      * Upload larger files as multipart uploads?
      */
     multipart: Boolean,
+
+    /**
+     * Determine autostart upload when file is selected or dropped.
+     */
+    autostart: {
+      type: Boolean,
+      default: true
+    },
 
     /**
      * Multipart upload chunk size
@@ -254,13 +256,13 @@ export default {
       }
       this.axios.post(this.endPoint, data, config)
         .then((response) => {
-          this.$emit('fileUploaded', {
+          this.$bus.$emit('fileUploaded', {
             file: fileObj,
             response: response.data
           })
         })
         .catch((error) => {
-          this.$emit('error', error)
+          this.$bus.$emit('error', error)
           fileObj.error = error.response.data
         })
     },
@@ -315,7 +317,7 @@ export default {
     processQueue (queue, fileObj, response) {
       queue = this.cleanQueue(queue, response)
       if (!queue.length) {
-        this.$emit('fileUploaded', {
+        this.$bus.$emit('fileUploaded', {
           file: fileObj,
           response: response.data
         })
@@ -324,7 +326,7 @@ export default {
       const part = queue.shift()
       this.axios.post(this.endPoint, part.data, part.config)
         .then((response) => {
-          this.$emit('chunkUploaded', part.fileObj, part.currentPart)
+          this.$bus.$emit('chunkUploaded', part.fileObj, part.currentPart)
           this.processQueue(queue, fileObj, response)
         })
         .catch((error) => {
@@ -336,7 +338,7 @@ export default {
             }, 60000) // should be from retry-after header
           }
 
-          this.$emit('error', error)
+          this.$bus.$emit('error', error)
           part.fileObj.error = error.response.data
         })
     },
@@ -395,9 +397,10 @@ export default {
       })
       // start upload if queue is not being used i.e not multiple
       if (!this.multiple) {
-        this.resetError()
-        this.upload()
-        this.$emit('startUpload')
+        if (this.autostart === true) {
+          this.upload()
+          this.$bus.$emit('startUpload')
+        }
       }
 
       this.browse = null
@@ -592,7 +595,8 @@ export default {
   },
   mounted () {
     this.configureAxios()
-    this.$on('fileUploaded', file => this.removeFile(file))
+    this.$bus.$on('fileUploaded', file => this.removeFile(file))
+    this.$bus.$on('startUploadingProcess', this.upload)
   }
 }
 </script>
