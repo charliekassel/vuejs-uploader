@@ -3,8 +3,9 @@
     @drop.stop.prevent="dropFiles"
     @dragover.stop.prevent="dragover"
     @dragleave="dragleave"
-    :class="{'vuejs-uploader--dragged' : isDraggedOver}">
-    <label>
+    :class="{'vuejs-uploader--dragged' : isDraggedOver && !isBrowseDisabled}">
+
+    <label :class="{'disabled': isBrowseDisabled}">
       <span v-if="isSingleFileUpload">
         <!-- Customisable slot for single file uploads -->
         <slot name="browse-btn">
@@ -24,7 +25,7 @@
         </slot>
       </span>
       <!-- File Input -->
-      <input type="file" :multiple="multiple" :accept="accept" @change="selectFiles">
+      <input type="file" :disabled="isBrowseDisabled" :multiple="multiple" :accept="accept" @change="selectFiles">
     </label>
 
 
@@ -32,7 +33,7 @@
       <button type="button" class="vuejs-uploader__btn" @click="clear" :disabled="noFiles">
         <slot name="clear-btn">Clear</slot>
       </button>
-      <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isDisabled" :class="{'vuejs-uploader__btn--ready' : hasFiles}">
+      <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isUploadDisabled" :class="{'vuejs-uploader__btn--ready' : hasFiles}">
         <slot name="upload-btn">Upload</slot>
       </button>
     </span>
@@ -42,7 +43,7 @@
 
     <!-- File list -->
     <ul class="vuejs-uploader__queue" v-if="isMultipleFileUpload">
-      <li v-for="fileObj in this.files" class="vuejs-uploader__file">
+      <li v-for="(fileObj, i) in this.files" class="vuejs-uploader__file" :key="i">
         <div class="vuejs-uploader__file--preview">
           <div class="loading" v-if="isImageUpload(fileObj) && !fileObj.image"></div>
           <img :src="fileObj.image" v-if="fileObj.image" />
@@ -162,7 +163,12 @@ export default {
     showProgressBar: {
       type: Boolean,
       default: false
-    }
+    },
+
+    /**
+     * Disable uploading
+     */
+    disabled: Boolean
   },
   data () {
     return {
@@ -188,7 +194,10 @@ export default {
     isMultipartUpload () {
       return this.multipart
     },
-    isDisabled () {
+    isBrowseDisabled () {
+      return this.disabled
+    },
+    isUploadDisabled () {
       let completeRequired = true
       if (this.userDefinedProperties) {
         this.userDefinedProperties.forEach(prop => {
@@ -216,6 +225,9 @@ export default {
      * Initiate the upload
      */
     upload () {
+      if (this.Upload) {
+        return false
+      }
       this.resetError()
       this.files.forEach(file => this.uploadFile(file))
     },
@@ -600,6 +612,8 @@ export default {
 .vuejs-uploader
   label
     cursor pointer
+    &.disabled
+      cursor not-allowed
   [type=file]
     display none
 

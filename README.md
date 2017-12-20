@@ -53,6 +53,7 @@ Multipart upload, with custom Browse button using `slot` api
 |userDefinedProperties|Array   |        |       |array of objects defined with `property` and optional `required` properties|
 |errorHandler         |Function|        |       |Function passed in to handle http errors|
 |headers              |Object  |        |       |Headers can be added to the http requests|
+|disabled             |Boolean |        |false  |Disable the uploader|
 
 ## Demo
 
