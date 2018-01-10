@@ -12,7 +12,7 @@
           <span class="vuejs-uploader__btn">Browse</span>
         </slot>
 
-        <p class="vuejs-uploader__error" v-if="files[0] && hasError(files[0])">{{ handleError(files[0].error) }}</p>
+        <p class="vuejs-uploader__error" v-if="files[0] && hasError(files[0]) && showErrors">{{ handleError(files[0].error) }}</p>
 
         <div v-if="showProgressBar && files[0]" class="vuejs-uploader__progress">
           <div class="vuejs-uploader__progress-bar" :style="progressBarStyle(files[0])"></div>
@@ -55,7 +55,7 @@
           <p class="vuejs-uploader__file--filename">{{ fileObj.file.name }}</p>
           <p class="vuejs-uploader__file--filesize">{{ fileObj.formattedFilesize }}</p>
 
-          <p v-if="fileObj.error">{{ handleError(fileObj.error) }}</p>
+          <p v-if="fileObj.error && showErrors">{{ handleError(fileObj.error) }}</p>
 
           <slot name="extra" :fileObj="fileObj"></slot>
 
@@ -102,7 +102,10 @@ export default {
     /**
      * Error handler
      */
-    errorHandler: Function,
+    showErrors: {
+      type: Boolean,
+      default: true
+    },
 
     /**
      * Accept list of mimes
@@ -592,13 +595,9 @@ export default {
     /**
      * Defer to external error handler if configured else return the error message
      * @param  {Object} error
-     * @return {Function|Object}
+     * @return {Object}
      */
     handleError (error) {
-      if (typeof this.errorHandler === 'function') {
-        return this.errorHandler(error)
-      }
-
       return error
     }
   },
