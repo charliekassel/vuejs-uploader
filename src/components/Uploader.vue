@@ -328,7 +328,7 @@ export default {
      * @param  {Object} response
      */
     processQueue (queue, fileObj, response) {
-      queue = this.cleanQueue(queue, response)
+      queue = this.cleanQueue(queue, response, fileObj)
       if (!queue.length) {
         this.$emit('fileUploaded', {
           file: fileObj,
@@ -361,11 +361,21 @@ export default {
      *
      * @param  {Array} queue
      * @param  {Object} response
+     * @param  {FileUpload} fileObj
      * @return {Array}
      */
-    cleanQueue (queue, response) {
+    cleanQueue (queue, response, fileObj) {
       if (response && response.data && response.data.meta.remainingParts) {
-        return queue.filter(item => response.data.meta.remainingParts.indexOf(item.currentPart) !== -1)
+        return queue.filter(item => {
+          const notUploaded = response.data.meta.remainingParts.includes(item.currentPart) === false
+          if (!notUploaded) {
+            fileObj.uploadedParts.push({
+              part: item.currentPart,
+              loaded: 100
+            })
+          }
+          return notUploaded
+        })
       }
       return queue
     },
