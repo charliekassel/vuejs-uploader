@@ -9,6 +9,13 @@ If prop `multiple` is true a file list is rendered on selecting files otherwise 
 
 Drag is supported and when files are dragged over the uploader the class `vuejs-uploader--dragged` is added to the root element.
 
+### Remaining upload parts
+
+For resumable uploads we need to know what parts have already been uploaded so we don't bother re uploading them.
+This component makes use of a response property that returns an array of parts remaining that still need to be uploaded.
+If this property is in the response it will remove any parts in the queue that are not in that array.
+To make use of this property it expects to be formatted as `meta.remainingParts`.
+
 ## Install
 
 ```bash
