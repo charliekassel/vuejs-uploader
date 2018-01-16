@@ -364,8 +364,8 @@ export default {
      * @return {Array}
      */
     cleanQueue (queue, response) {
-      if (response && response.data && response.data.remainingParts) {
-        return queue.filter(item => response.data.remainingParts.indexOf(item.currentPart) !== -1)
+      if (response && response.data && response.data.meta.remainingParts) {
+        return queue.filter(item => response.data.meta.remainingParts.indexOf(item.currentPart) !== -1)
       }
       return queue
     },
@@ -617,7 +617,7 @@ export default {
     display none
 
 .vuejs-uploader__error
-  background pink
+  color red
   padding 10px
   margin 10px 0
 
