@@ -366,15 +366,16 @@ export default {
      */
     cleanQueue (queue, response, fileObj) {
       if (response && response.data && response.data.meta.remainingParts) {
+        // return queue.filter(item => response.remainingParts.indexOf(item.currentPart) !== -1)
         return queue.filter(item => {
-          const notUploaded = response.data.meta.remainingParts.includes(item.currentPart) === false
-          if (!notUploaded) {
+          const uploaded = response.data.meta.remainingParts.includes(item.currentPart) === false
+          if (uploaded) {
             fileObj.uploadedParts.push({
               part: item.currentPart,
               loaded: 100
             })
           }
-          return notUploaded
+          return !uploaded
         })
       }
       return queue
