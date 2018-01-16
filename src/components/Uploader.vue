@@ -267,7 +267,7 @@ export default {
           fileObj.setProgress(progressEvent)
         }
       }
-      this.axios.post(this.endPoint, data, config)
+      this.$http.post(this.endPoint, data, config)
         .then((response) => {
           this.$emit('fileUploaded', {
             file: fileObj,
@@ -337,7 +337,7 @@ export default {
         return true
       }
       const part = queue.shift()
-      this.axios.post(this.endPoint, part.data, part.config)
+      this.$http.post(this.endPoint, part.data, part.config)
         .then((response) => {
           this.$emit('chunkUploaded', part.fileObj, part.currentPart)
           this.processQueue(queue, fileObj, response)
@@ -576,12 +576,12 @@ export default {
     /**
      * Configure axios
      */
-    configureAxios () {
+    configureHttpClient () {
       const config = {}
       if (this.headers) {
         config.headers = this.headers
       }
-      this.axios = axios.create(config)
+      this.$http = axios.create(config)
     },
 
     /**
@@ -602,7 +602,7 @@ export default {
     }
   },
   mounted () {
-    this.configureAxios()
+    this.configureHttpClient()
     this.$on('fileUploaded', file => this.removeFile(file))
   }
 }
