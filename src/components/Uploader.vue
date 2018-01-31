@@ -365,10 +365,10 @@ export default {
      * @return {Array}
      */
     cleanQueue (queue, response, fileObj) {
-      if (response && response.data && response.data.meta.remainingParts) {
+      if (response && response.data && response.data.meta) {
         // return queue.filter(item => response.remainingParts.indexOf(item.currentPart) !== -1)
         return queue.filter(item => {
-          const uploaded = response.data.meta.remainingParts.includes(item.currentPart) === false
+          const uploaded = response.data.meta.includes(item.currentPart) === false
           if (uploaded) {
             fileObj.uploadedParts.push({
               part: item.currentPart,
