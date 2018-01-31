@@ -206,7 +206,7 @@ class Uploader
         if (count($this->getUploadedParts($filename)) !== $totalParts) {
             return $this->response(200, [
                 'message' => $this->getSuccessMessage(),
-                'remainingParts' => $this->getRemainingParts($filename, $totalParts)
+                'meta' => $this->getRemainingParts($filename, $totalParts)
             ]);
         }
 
