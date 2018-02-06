@@ -328,7 +328,7 @@ export default {
      * @param  {Object} response
      */
     processQueue (queue, fileObj, response) {
-      queue = this.cleanQueue(queue, response, fileObj)
+      queue = this.cleanQueue(queue, fileObj, response)
       if (!queue.length) {
         this.$emit('fileUploaded', {
           file: fileObj,
@@ -358,15 +358,20 @@ export default {
 
     /**
      * Removes from the queue any parts that have already been uploaded
+     * This requires the server response to contain a `remainingParts` property
+     * with an array of all remain parts to be uploaded.
+     * This is for resumable uploads.
      *
      * @param  {Array} queue
-     * @param  {Object} response
      * @param  {FileUpload} fileObj
+     * @param  {Object} response
      * @return {Array}
      */
-    cleanQueue (queue, response, fileObj) {
-      if (response && response.data && response.data.meta.remainingParts) {
-        // return queue.filter(item => response.remainingParts.indexOf(item.currentPart) !== -1)
+    cleanQueue (queue, fileObj, response) {
+      if (!response) {
+        return queue
+      }
+      if (response.data.meta && response.data.meta.remainingParts) {
         return queue.filter(item => {
           const uploaded = response.data.meta.remainingParts.includes(item.currentPart) === false
           if (uploaded) {
