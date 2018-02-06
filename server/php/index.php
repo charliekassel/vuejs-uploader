@@ -9,7 +9,6 @@
 $uploader = new Uploader();
 $uploader->saveUploadedFile();
 
-
 class Uploader
 {
     const UPLOAD_DIR = '../uploads/';
@@ -28,7 +27,7 @@ class Uploader
     private function allowCors()
     {
         header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
+        header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
         if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
             exit(0);
         }
@@ -48,7 +47,10 @@ class Uploader
                 $this->mergeMultiUpload(self::UPLOAD_DIR . $_POST['filename'], (int)$_POST['totalParts']);
             }
             return $this->response(200, [
-                'message' => $this->getSuccessMessage()
+                'message' => $this->getSuccessMessage(),
+                'meta' => [
+                  'remainingParts' => []
+                ]
             ]);
         }
 
@@ -158,7 +160,7 @@ class Uploader
      */
     private function getUploadedParts(string $filename): array
     {
-        return glob($filename . ".*");
+        return glob($filename . '.*');
     }
 
     /**
@@ -194,19 +196,20 @@ class Uploader
         return array_values(array_diff(range(1, $totalParts), $uploadedParts));
     }
 
-
     /**
      * Combines the parts of a multipart upload into a single file.
      *
      * @param  string $filename
      * @param  int    $totalParts
      */
-    private function mergeMultiUpload(string $filename, int $totalParts) {
-
+    private function mergeMultiUpload(string $filename, int $totalParts)
+    {
         if (count($this->getUploadedParts($filename)) !== $totalParts) {
             return $this->response(200, [
                 'message' => $this->getSuccessMessage(),
-                'remainingParts' => $this->getRemainingParts($filename, $totalParts)
+                'meta' => [
+                  'remainingParts' => $this->getRemainingParts($filename, $totalParts)
+                ]
             ]);
         }
 
@@ -214,9 +217,9 @@ class Uploader
 
         ini_set('max_execution_time', 300);
 
-        $out = fopen($filename, "w");
+        $out = fopen($filename, 'w');
         foreach ($sortedFiles as $file) {
-            $in = fopen($file, "r");
+            $in = fopen($file, 'r');
             while ($line = fgets($in)) {
                 fwrite($out, $line);
             }
@@ -224,7 +227,7 @@ class Uploader
         }
         fclose($out);
 
-        foreach($sortedFiles as $file) {
+        foreach ($sortedFiles as $file) {
             unlink($file);
         }
 
@@ -237,13 +240,11 @@ class Uploader
      * @param  int    $status
      * @param  array  $data
      */
-    private function response(int $status, array $data) {
+    private function response(int $status, array $data)
+    {
         http_response_code($status);
         header('Content-Type: application/json');
         echo json_encode($data);
         exit(0);
     }
-
-
 }
-
