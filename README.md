@@ -37,11 +37,11 @@ Multiple Files
 Multipart upload, with custom Browse button using `slot` api
 ```html
 <uploader end-point="http://localhost:5000" :multipart="true">
-    <button slot="browse">Select File</button>
+    <button slot="browse-btn">Select File</button>
 </uploader>
 
 <uploader end-point="http://localhost:5000" :multipart="true">
-    <img slot="browse" src="someimg.jpg" />
+    <img slot="browse-btn" src="someimg.jpg" />
 </uploader>
 ```
 
@@ -61,6 +61,15 @@ Multipart upload, with custom Browse button using `slot` api
 |errorHandler         |Function|        |       |Function passed in to handle http errors|
 |headers              |Object  |        |       |Headers can be added to the http requests|
 |disabled             |Boolean |        |false  |Disable the uploader|
+
+## Slots
+
+|Slot name |Single file uploader|Multi file uploader|Description|
+|----------|:------------------:|:-----------------:|-----------|
+|browse-btn| [x]                | [x]               |Provide your own _browse_ button html|
+|clear-btn | [ ]                | [x]               |Provide your own upload list _clear_ button html|
+|upload-btn| [ ]                | [x]               |Provide your own upload list _upload_ button html|
+|extra     | [ ]                | [x]               |Slot to add extra form elements to send along with the upload|
 
 ## Demo
 
