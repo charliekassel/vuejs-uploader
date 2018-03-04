@@ -1,5 +1,7 @@
 # Vuejs Uploader
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/charliekassel/vuejs-uploader.svg)](https://greenkeeper.io/)
+
 Multipart uploader Vue component.
 
 This uploader will optionally upload files in multipart chunks.
