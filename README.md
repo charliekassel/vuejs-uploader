@@ -1,6 +1,11 @@
 # Vuejs Uploader
 
-Multipart uploader Vue component.
+[![Travis Build](https://img.shields.io/travis/charliekassel/vuejs-uploader.svg)](https://travis-ci.org/charliekassel/vuejs-uploader)
+[![Version](https://img.shields.io/npm/v/vuejs-uploader.svg)](https://www.npmjs.com/package/vuejs-uploader)
+[![Coveralls github](https://img.shields.io/coveralls/github/charliekassel/vuejs-uploader.svg)](https://coveralls.io/github/charliekassel/vuejs-uploader?branch=master)
+[![Downloads](https://img.shields.io/npm/dm/vuejs-uploader.svg)](https://www.npmjs.com/package/vuejs-uploader)
+
+## Multipart uploader Vue component.
 
 This uploader will optionally upload files in multipart chunks.
 This get's around max upload sizes allowing you to upload large files.
