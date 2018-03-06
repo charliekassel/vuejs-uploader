@@ -109,7 +109,6 @@ export default {
 
     /**
      * Accept list of mimes
-     * @type {String}
      */
     accept: String,
 
@@ -243,8 +242,23 @@ export default {
       this.files = []
     },
 
+    /**
+     * Is the file to be uploaded an image?
+     * @param {FileUpload}
+     * @return {Boolean}
+     */
     isImageUpload (fileObj) {
       return fileObj.hasOwnProperty('image')
+    },
+
+    /**
+     * Is the file an Image?
+     *
+     * @param {File} file
+     * @return {Boolean}
+     */
+    isImage (file) {
+      return ['image/jpeg', 'image/png', 'image/gif'].includes(file.type)
     },
 
     /**
@@ -399,10 +413,16 @@ export default {
       return fileObj.file.slice(start, end)
     },
 
+    /**
+     * Add files to the FileList
+     */
     selectFiles (event) {
       this.addFiles(event.target.files)
     },
 
+    /**
+     * Add files by dropping
+     */
     dropFiles (event) {
       this.isDraggedOver = false
       this.addFiles(event.dataTransfer.files)
@@ -511,16 +531,6 @@ export default {
       this.resetError()
       const index = this.files.indexOf(file)
       this.files.splice(index, 1)
-    },
-
-    /**
-     * Is the file an Image?
-     *
-     * @param {File} file
-     * @return {Boolean}
-     */
-    isImage (file) {
-      return ['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type) !== -1
     },
 
     /**
