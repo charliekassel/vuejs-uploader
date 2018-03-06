@@ -71,10 +71,10 @@ Multipart upload, with custom Browse button using `slot` api
 
 |Slot name |Single file uploader|Multi file uploader|Description|
 |----------|:------------------:|:-----------------:|-----------|
-|browse-btn| [x]                | [x]               |Provide your own _browse_ button html|
-|clear-btn | [ ]                | [x]               |Provide your own upload list _clear_ button html|
-|upload-btn| [ ]                | [x]               |Provide your own upload list _upload_ button html|
-|extra     | [ ]                | [x]               |Slot to add extra form elements to send along with the upload|
+|browse-btn| X                  | X                 |Provide your own _browse_ button html|
+|clear-btn |                    | X                 |Provide your own upload list _clear_ button html|
+|upload-btn|                    | X                 |Provide your own upload list _upload_ button html|
+|extra     |                    | X                 |Slot to add extra form elements to send along with the upload|
 
 ## Demo
 
