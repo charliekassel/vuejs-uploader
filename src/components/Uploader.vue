@@ -30,10 +30,10 @@
 
 
     <span v-if="isMultipleFileUpload">
-      <button type="button" class="vuejs-uploader__btn" @click="clear" :disabled="noFiles">
+      <button type="button" class="vuejs-uploader__btn vuejs-uploader__btn--clear" @click="clear" :disabled="noFiles">
         <slot name="clear-btn">Clear</slot>
       </button>
-      <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isUploadDisabled" :class="{'vuejs-uploader__btn--ready' : hasFiles}">
+      <button type="button" class="vuejs-uploader__btn vuejs-uploader__btn--upload" @click="upload" :disabled="isUploadDisabled" :class="{'vuejs-uploader__btn--ready' : hasFiles}">
         <slot name="upload-btn">Upload</slot>
       </button>
     </span>
