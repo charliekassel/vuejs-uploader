@@ -1,14 +1,18 @@
 import Uploader from '@/components/Uploader.vue'
 import {shallow} from '@vue/test-utils'
+import MockAdapter from 'axios-mock-adapter'
 
 describe('Single file uploader', () => {
   let wrapper
+  let mock
+  const file = new Blob(['foobar'], {type: 'text/plain'})
   beforeEach(() => {
     wrapper = shallow(Uploader, {
       propsData: {
         endPoint: 'localhost'
       }
     })
+    mock = new MockAdapter(wrapper.vm.$http)
   })
 
   it('should start with an empty file list', () => {
@@ -26,8 +30,26 @@ describe('Single file uploader', () => {
   })
 
   it('should upload a file', () => {
-    const file = new Blob(['foobar'], {type: 'text/plain'})
+    mock.onPost('localhost').reply(200, {})
     wrapper.vm.addFiles([file])
     expect(wrapper.emitted().startUpload).toBeTruthy()
+  })
+
+  it('should emit fileUploaded', async () => {
+    mock.onPost('localhost').reply(200, {})
+    await wrapper.vm.uploadFile(file).then(() => {
+      expect(wrapper.emitted().fileUploaded).toBeTruthy()
+    })
+  })
+
+  it('should emit an error', async () => {
+    mock.onPost('localhost').reply(500, {})
+    await wrapper.vm.uploadFile(file).then(() => {
+      expect(wrapper.emitted().error).toBeTruthy()
+    })
+  })
+
+  it('does not upload when the uploader is disabled', () => {
+    expect(wrapper.vm.upload()).toBe(false)
   })
 })

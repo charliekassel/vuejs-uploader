@@ -32,12 +32,13 @@
     "url": "https://github.com/charliekassel/vuejs-uploader/issues"
   },
   "dependencies": {
-    "axios": "^0.16.1",
     "vue": "^2.3.3"
   },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.12",
     "autoprefixer": "^6.7.2",
+    "axios": "^0.18.0",
+    "axios-mock-adapter": "^1.14.1",
     "babel-core": "^6.26.0",
     "babel-eslint": "^7.1.1",
     "babel-jest": "^22.4.1",

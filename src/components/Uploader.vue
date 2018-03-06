@@ -227,7 +227,7 @@ export default {
      * Initiate the upload
      */
     upload () {
-      if (this.Upload) {
+      if (this.isUploadDisabled) {
         return false
       }
       this.resetError()
@@ -265,6 +265,7 @@ export default {
      * Upload a single file
      *
      * @param  {FileUpload} fileObj
+     * @return {Promise}
      */
     uploadFile (fileObj) {
       if (this.multipart && fileObj.file.size > this.multipartChunkSize) {
@@ -281,7 +282,7 @@ export default {
           fileObj.setProgress(progressEvent)
         }
       }
-      this.$http.post(this.endPoint, data, config)
+      return this.$http.post(this.endPoint, data, config)
         .then((response) => {
           this.$emit('fileUploaded', {
             file: fileObj,
@@ -340,6 +341,7 @@ export default {
      * @param  {Array} queue
      * @param  {FileUpload} fileObj
      * @param  {Object} response
+     * @return {Promise}
      */
     processQueue (queue, fileObj, response) {
       queue = this.cleanQueue(queue, fileObj, response)
@@ -351,7 +353,7 @@ export default {
         return true
       }
       const part = queue.shift()
-      this.$http.post(this.endPoint, part.data, part.config)
+      return this.$http.post(this.endPoint, part.data, part.config)
         .then((response) => {
           this.$emit('chunkUploaded', part.fileObj, part.currentPart)
           this.processQueue(queue, fileObj, response)
