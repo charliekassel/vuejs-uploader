@@ -22,6 +22,6 @@ export default {
    * @return {String}
    */
   fileExtension (filename) {
-    return filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2)
+    return filename ? filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2) : ''
   }
 }
