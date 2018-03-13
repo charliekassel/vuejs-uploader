@@ -33,9 +33,17 @@ describe('Multi file uploader', () => {
     file2.name = 'file2'
     wrapper.vm.addFiles([file1, file2])
     expect(wrapper.find('.vuejs-uploader__queue')).toBeDefined()
-    // wrapper.find('.vuejs-uploader__btn--clear').trigger('click')
     wrapper.vm.clear()
     wrapper.update()
     expect(wrapper.findAll('.vuejs-uploader__file')).toHaveLength(0)
+  })
+
+  it('should set a message when more than files than maxUploads are added to the filelist', () => {
+    wrapper.setProps({
+      maxUploads: 2
+    })
+    expect(wrapper.vm.errorMessage).toBeFalsy()
+    wrapper.vm.addFiles([{name: 'abc.jpg'}, {name: 'def.jpg'}, {name: 'ghi.jpg'}])
+    expect(wrapper.vm.errorMessage).toBeTruthy()
   })
 })
