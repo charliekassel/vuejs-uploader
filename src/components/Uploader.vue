@@ -30,10 +30,10 @@
 
 
     <span v-if="isMultipleFileUpload">
-      <button type="button" class="vuejs-uploader__btn" @click="clear" :disabled="noFiles">
+      <button type="button" class="vuejs-uploader__btn vuejs-uploader__btn--clear" @click="clear" :disabled="noFiles">
         <slot name="clear-btn">Clear</slot>
       </button>
-      <button type="button" class="vuejs-uploader__btn" @click="upload" :disabled="isUploadDisabled" :class="{'vuejs-uploader__btn--ready' : hasFiles}">
+      <button type="button" class="vuejs-uploader__btn vuejs-uploader__btn--upload" @click="upload" :disabled="isUploadDisabled" :class="{'vuejs-uploader__btn--ready' : hasFiles}">
         <slot name="upload-btn">Upload</slot>
       </button>
     </span>
@@ -109,7 +109,6 @@ export default {
 
     /**
      * Accept list of mimes
-     * @type {String}
      */
     accept: String,
 
@@ -228,7 +227,7 @@ export default {
      * Initiate the upload
      */
     upload () {
-      if (this.Upload) {
+      if (this.isUploadDisabled) {
         return false
       }
       this.resetError()
@@ -243,16 +242,39 @@ export default {
       this.files = []
     },
 
+    /**
+     * Is the file to be uploaded an image?
+     * @param {FileUpload}
+     * @return {Boolean}
+     */
     isImageUpload (fileObj) {
       return fileObj.hasOwnProperty('image')
+    },
+
+    /**
+     * Is the file an Image?
+     *
+     * @param {File} file
+     * @return {Boolean}
+     */
+    isImage (file) {
+      return ['image/jpeg', 'image/png', 'image/gif'].includes(file.type)
     },
 
     /**
      * Upload a single file
      *
      * @param  {FileUpload} fileObj
+     * @return {Promise}
      */
     uploadFile (fileObj) {
+      if (fileObj.isUploading) {
+        return false
+      }
+      // adds a flag to prevent attempting to
+      // upload the same file multiple times.
+      fileObj.isUploading = true
+
       if (this.multipart && fileObj.file.size > this.multipartChunkSize) {
         this.multipartUploadFile(fileObj)
         return true
@@ -267,7 +289,7 @@ export default {
           fileObj.setProgress(progressEvent)
         }
       }
-      this.$http.post(this.endPoint, data, config)
+      return this.$http.post(this.endPoint, data, config)
         .then((response) => {
           this.$emit('fileUploaded', {
             file: fileObj,
@@ -326,6 +348,7 @@ export default {
      * @param  {Array} queue
      * @param  {FileUpload} fileObj
      * @param  {Object} response
+     * @return {Promise}
      */
     processQueue (queue, fileObj, response) {
       queue = this.cleanQueue(queue, fileObj, response)
@@ -337,7 +360,7 @@ export default {
         return true
       }
       const part = queue.shift()
-      this.$http.post(this.endPoint, part.data, part.config)
+      return this.$http.post(this.endPoint, part.data, part.config)
         .then((response) => {
           this.$emit('chunkUploaded', part.fileObj, part.currentPart)
           this.processQueue(queue, fileObj, response)
@@ -399,10 +422,16 @@ export default {
       return fileObj.file.slice(start, end)
     },
 
+    /**
+     * Add files to the FileList
+     */
     selectFiles (event) {
       this.addFiles(event.target.files)
     },
 
+    /**
+     * Add files by dropping
+     */
     dropFiles (event) {
       this.isDraggedOver = false
       this.addFiles(event.dataTransfer.files)
@@ -511,16 +540,6 @@ export default {
       this.resetError()
       const index = this.files.indexOf(file)
       this.files.splice(index, 1)
-    },
-
-    /**
-     * Is the file an Image?
-     *
-     * @param {File} file
-     * @return {Boolean}
-     */
-    isImage (file) {
-      return ['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type) !== -1
     },
 
     /**
