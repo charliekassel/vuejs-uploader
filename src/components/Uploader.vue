@@ -268,6 +268,13 @@ export default {
      * @return {Promise}
      */
     uploadFile (fileObj) {
+      if (fileObj.isUploading) {
+        return false
+      }
+      // adds a flag to prevent attempting to
+      // upload the same file multiple times.
+      fileObj.isUploading = true
+
       if (this.multipart && fileObj.file.size > this.multipartChunkSize) {
         this.multipartUploadFile(fileObj)
         return true
