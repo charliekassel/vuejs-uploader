@@ -9,6 +9,7 @@ export default class FileUpload {
     this.uploadedParts = []
     this.totalParts = 1
     this.extension = fileHelpers.fileExtension(file.name)
+    this.isUploading = false
   }
 
   setProgress (progressEvent) {

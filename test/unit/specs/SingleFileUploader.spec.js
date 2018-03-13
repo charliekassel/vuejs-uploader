@@ -1,11 +1,13 @@
 import Uploader from '@/components/Uploader.vue'
 import {shallow} from '@vue/test-utils'
 import MockAdapter from 'axios-mock-adapter'
+import FileUpload from '@/FileUpload'
 
 describe('Single file uploader', () => {
   let wrapper
   let mock
   const file = new Blob(['foobar'], {type: 'text/plain'})
+  file.isUploading = false
   beforeEach(() => {
     wrapper = shallow(Uploader, {
       propsData: {
@@ -37,14 +39,14 @@ describe('Single file uploader', () => {
 
   it('should emit fileUploaded', async () => {
     mock.onPost('localhost').reply(200, {})
-    await wrapper.vm.uploadFile(file).then(() => {
+    await wrapper.vm.uploadFile(new FileUpload(file)).then(() => {
       expect(wrapper.emitted().fileUploaded).toBeTruthy()
     })
   })
 
   it('should emit an error', async () => {
     mock.onPost('localhost').reply(500, {})
-    await wrapper.vm.uploadFile(file).then(() => {
+    await wrapper.vm.uploadFile(new FileUpload(file)).then(() => {
       expect(wrapper.emitted().error).toBeTruthy()
     })
   })
