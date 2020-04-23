@@ -76,6 +76,15 @@ Multipart upload, with custom Browse button using `slot` api
 |upload-btn|                    | X                 |Provide your own upload list _upload_ button html|
 |extra     |                    | X                 |Slot to add extra form elements to send along with the upload|
 
+## Events
+
+|Event name |Single file uploader|Multi file uploader|Description|
+|----------|:------------------:|:-----------------:|-----------|
+|startUpload    | X                   |                  |When start upload if queue is not being used i.e not multiple|
+|fileUploaded   | X                   | X                 |After finishing file upload, Returns response|
+|error          | X                    | X                 |On upload error, Returns error obj|
+|chunkUploaded  |                     | X                 |When uploaded one item of multiple items, Returns FileObj, Curent Part|
+
 ## Demo
 
 To demo the uploader you need a server, there is a simple php example
